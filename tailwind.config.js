@@ -85,6 +85,5 @@ module.exports = {
     },
   },
   plugins: [
-    require("tailwindcss-animate"),            // if not installed, remove or add it as a devDep later
   ],
 };
