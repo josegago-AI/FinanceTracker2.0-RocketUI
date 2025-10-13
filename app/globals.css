@@ -88,3 +88,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .financial-positive {
+    @apply text-success;
+  }
+
+  .financial-negative {
+    @apply text-error;
+  }
+
+  .elevation-1 {
+    @apply shadow-elevation-1;
+  }
+
+  .elevation-2 {
+    @apply shadow-elevation-2;
+  }
+}
+
