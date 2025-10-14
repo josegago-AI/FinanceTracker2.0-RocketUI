@@ -5,6 +5,7 @@ import { unstable_noStore as noStore } from 'next/cache'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { isAuthDisabled } from '@/lib/config/flags'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,6 +23,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        {isAuthDisabled && (
+          <div className="bg-yellow-100 border-b border-yellow-400 px-4 py-2 text-center text-sm text-yellow-900">
+            <strong>Authless Dev Mode</strong> - No login required, using admin client
+          </div>
+        )}
         <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container flex h-14 items-center">
             <div className="mr-4 flex">

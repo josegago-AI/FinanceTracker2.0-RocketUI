@@ -1,20 +1,20 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { getSupabaseClient, getUserId } from '@/lib/supabase/helpers'
 
 export async function getAccounts() {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await getSupabaseClient()
+  const userId = await getUserId()
 
-  if (!user) {
+  if (!userId) {
     return []
   }
 
   const { data, error } = await supabase
     .from('accounts')
     .select('*')
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -26,10 +26,10 @@ export async function getAccounts() {
 }
 
 export async function createAccount(formData: FormData) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await getSupabaseClient()
+  const userId = await getUserId()
 
-  if (!user) {
+  if (!userId) {
     return { error: 'Unauthorized' }
   }
 
@@ -42,7 +42,7 @@ export async function createAccount(formData: FormData) {
   const { error } = await supabase
     .from('accounts')
     .insert({
-      user_id: user.id,
+      user_id: userId,
       name,
       type,
       balance,
@@ -61,10 +61,10 @@ export async function createAccount(formData: FormData) {
 }
 
 export async function updateAccount(id: string, formData: FormData) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await getSupabaseClient()
+  const userId = await getUserId()
 
-  if (!user) {
+  if (!userId) {
     return { error: 'Unauthorized' }
   }
 
@@ -86,7 +86,7 @@ export async function updateAccount(id: string, formData: FormData) {
       is_active
     })
     .eq('id', id)
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
 
   if (error) {
     console.error('Error updating account:', error)
@@ -98,10 +98,10 @@ export async function updateAccount(id: string, formData: FormData) {
 }
 
 export async function deleteAccount(id: string) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await getSupabaseClient()
+  const userId = await getUserId()
 
-  if (!user) {
+  if (!userId) {
     return { error: 'Unauthorized' }
   }
 
@@ -109,7 +109,7 @@ export async function deleteAccount(id: string) {
     .from('accounts')
     .delete()
     .eq('id', id)
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
 
   if (error) {
     console.error('Error deleting account:', error)

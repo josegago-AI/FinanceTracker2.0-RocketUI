@@ -2,10 +2,9 @@ export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
 
 import { unstable_noStore as noStore } from 'next/cache'
-import { redirect } from 'next/navigation'
-import { getSessionUser } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { Home, CreditCard, Settings, PieChart, Wallet, FolderOpen } from 'lucide-react'
+import { Home, CreditCard, Settings, Wallet, FolderOpen } from 'lucide-react'
+import { isAuthDisabled } from '@/lib/config/flags'
 
 export default async function DashboardLayout({
   children,
@@ -13,10 +12,15 @@ export default async function DashboardLayout({
   children: React.ReactNode
 }) {
   noStore()
-  const user = await getSessionUser()
 
-  if (!user) {
-    redirect('/auth/signin')
+  if (!isAuthDisabled) {
+    const { redirect } = await import('next/navigation')
+    const { getSessionUser } = await import('@/lib/supabase/server')
+    const user = await getSessionUser()
+
+    if (!user) {
+      redirect('/auth/signin')
+    }
   }
 
   return (

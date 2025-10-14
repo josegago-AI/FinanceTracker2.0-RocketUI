@@ -1,13 +1,14 @@
 import { unstable_noStore as noStore } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { getSupabaseClient, getUserId } from '@/lib/supabase/helpers'
 
 export async function getKPIs() {
   noStore()
-  const supabase = createClient()
+
+  const supabase = await getSupabaseClient()
+  const userId = await getUserId()
 
   try {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
+    if (!userId) {
       return {
         totalBalance: 0,
         monthlyIncome: 0,
@@ -23,7 +24,7 @@ export async function getKPIs() {
     const { data: accounts } = await supabase
       .from('accounts')
       .select('balance')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .eq('is_active', true)
 
     const totalBalance = accounts?.reduce((sum, acc) => sum + Number(acc.balance), 0) || 0
@@ -31,7 +32,7 @@ export async function getKPIs() {
     const { data: transactions } = await supabase
       .from('transactions')
       .select('amount, type')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .gte('date', startOfMonth.toISOString().split('T')[0])
 
     let monthlyIncome = 0
@@ -69,11 +70,12 @@ export async function getKPIs() {
 
 export async function getRecentTransactions() {
   noStore()
-  const supabase = createClient()
+
+  const supabase = await getSupabaseClient()
+  const userId = await getUserId()
 
   try {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
+    if (!userId) {
       return []
     }
 
@@ -89,7 +91,7 @@ export async function getRecentTransactions() {
           name
         )
       `)
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .order('date', { ascending: false })
       .limit(10)
 

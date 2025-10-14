@@ -1,20 +1,20 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { getSupabaseClient, getUserId } from '@/lib/supabase/helpers'
 
 export async function getCategories() {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await getSupabaseClient()
+  const userId = await getUserId()
 
-  if (!user) {
+  if (!userId) {
     return []
   }
 
   const { data, error } = await supabase
     .from('categories')
     .select('*')
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
     .order('type', { ascending: true })
     .order('name', { ascending: true })
 
@@ -27,10 +27,10 @@ export async function getCategories() {
 }
 
 export async function createCategory(formData: FormData) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await getSupabaseClient()
+  const userId = await getUserId()
 
-  if (!user) {
+  if (!userId) {
     return { error: 'Unauthorized' }
   }
 
@@ -42,7 +42,7 @@ export async function createCategory(formData: FormData) {
   const { error } = await supabase
     .from('categories')
     .insert({
-      user_id: user.id,
+      user_id: userId,
       name,
       type,
       color,
@@ -59,10 +59,10 @@ export async function createCategory(formData: FormData) {
 }
 
 export async function updateCategory(id: string, formData: FormData) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await getSupabaseClient()
+  const userId = await getUserId()
 
-  if (!user) {
+  if (!userId) {
     return { error: 'Unauthorized' }
   }
 
@@ -80,7 +80,7 @@ export async function updateCategory(id: string, formData: FormData) {
       icon
     })
     .eq('id', id)
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
 
   if (error) {
     console.error('Error updating category:', error)
@@ -92,10 +92,10 @@ export async function updateCategory(id: string, formData: FormData) {
 }
 
 export async function deleteCategory(id: string) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await getSupabaseClient()
+  const userId = await getUserId()
 
-  if (!user) {
+  if (!userId) {
     return { error: 'Unauthorized' }
   }
 
@@ -103,7 +103,7 @@ export async function deleteCategory(id: string) {
     .from('categories')
     .delete()
     .eq('id', id)
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
 
   if (error) {
     console.error('Error deleting category:', error)
