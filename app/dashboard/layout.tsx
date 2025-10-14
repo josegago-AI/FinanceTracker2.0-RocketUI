@@ -1,5 +1,7 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
 
+import { unstable_noStore as noStore } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/supabase/server'
 import Link from 'next/link'
@@ -10,6 +12,7 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
+  noStore()
   const user = await getSessionUser()
 
   if (!user) {

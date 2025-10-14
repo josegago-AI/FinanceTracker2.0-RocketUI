@@ -1,10 +1,13 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
 
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { formatCurrency, formatDate } from '@/lib/utils'
 
 async function getTransactions() {
-  const supabase = createClient()
+  noStore()
+  const supabase = await createClient()
   
   try {
     // Mock data for now - replace with real Supabase queries
@@ -78,6 +81,7 @@ async function getTransactions() {
 }
 
 export default async function TransactionsPage() {
+  noStore()
   const transactions = await getTransactions()
 
   return (

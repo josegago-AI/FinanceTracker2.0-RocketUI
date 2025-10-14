@@ -1,7 +1,12 @@
+import { unstable_noStore as noStore } from 'next/cache'
 import { getKPIs, getRecentTransactions } from './data'
 import { formatCurrency, formatDate } from '@/lib/utils'
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
 export default async function DashboardPage() {
+  noStore()
   const kpis = await getKPIs()
   const recentTransactions = await getRecentTransactions()
 

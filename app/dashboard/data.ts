@@ -1,7 +1,9 @@
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 
 export async function getKPIs() {
-  const supabase = createClient()
+  noStore()
+  const supabase = await createClient()
   
   try {
     // Mock data for now - replace with real Supabase queries
@@ -31,7 +33,8 @@ export async function getKPIs() {
 }
 
 export async function getRecentTransactions() {
-  const supabase = createClient()
+  noStore()
+  const supabase = await createClient()
   
   try {
     // Mock data for now - replace with real Supabase queries
