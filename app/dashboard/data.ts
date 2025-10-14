@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function getKPIs() {
   noStore()
-  const supabase = await createClient()
+  const supabase = createClient()
 
   try {
     const { data: { user } } = await supabase.auth.getUser()
@@ -69,7 +69,7 @@ export async function getKPIs() {
 
 export async function getRecentTransactions() {
   noStore()
-  const supabase = await createClient()
+  const supabase = createClient()
 
   try {
     const { data: { user } } = await supabase.auth.getUser()

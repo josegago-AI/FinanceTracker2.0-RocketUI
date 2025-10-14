@@ -4,8 +4,8 @@ import { cookies } from 'next/headers'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cache } from 'react'
 
-export const createClient = cache(async () => {
-  const cookieStore = await cookies()
+export const createClient = cache(() => {
+  const cookieStore = cookies()
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -30,7 +30,7 @@ export const createClient = cache(async () => {
 })
 
 export async function getSessionUser() {
-  const supabase = await createClient()
+  const supabase = createClient()
   const { data: { user }, error } = await supabase.auth.getUser()
   if (error) return null
   return user ?? null

@@ -7,7 +7,7 @@ import { formatCurrency, formatDate } from '@/lib/utils'
 
 async function getTransactions() {
   noStore()
-  const supabase = await createClient()
+  const supabase = createClient()
 
   try {
     const { data: { user } } = await supabase.auth.getUser()
