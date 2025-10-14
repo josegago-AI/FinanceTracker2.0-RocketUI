@@ -5,7 +5,7 @@ import { unstable_noStore as noStore } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { Home, CreditCard, Settings, PieChart } from 'lucide-react'
+import { Home, CreditCard, Settings, PieChart, Wallet, FolderOpen } from 'lucide-react'
 
 export default async function DashboardLayout({
   children,
@@ -30,25 +30,32 @@ export default async function DashboardLayout({
           <div className="mt-8 flex-grow flex flex-col">
             <nav className="flex-1 px-2 space-y-1">
               <Link
-                href="/"
+                href="/dashboard"
                 className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <Home className="mr-3 h-5 w-5" />
                 Dashboard
               </Link>
               <Link
-                href="/transactions"
+                href="/dashboard/accounts"
+                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <Wallet className="mr-3 h-5 w-5" />
+                Accounts
+              </Link>
+              <Link
+                href="/dashboard/transactions"
                 className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <CreditCard className="mr-3 h-5 w-5" />
                 Transactions
               </Link>
               <Link
-                href="/budgets"
+                href="/dashboard/categories"
                 className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
               >
-                <PieChart className="mr-3 h-5 w-5" />
-                Budgets
+                <FolderOpen className="mr-3 h-5 w-5" />
+                Categories
               </Link>
               <Link
                 href="/settings"
