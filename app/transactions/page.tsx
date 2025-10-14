@@ -8,72 +8,43 @@ import { formatCurrency, formatDate } from '@/lib/utils'
 async function getTransactions() {
   noStore()
   const supabase = await createClient()
-  
+
   try {
-    // Mock data for now - replace with real Supabase queries
-    const mockTransactions = [
-      {
-        id: '1',
-        date: new Date().toISOString(),
-        payee: 'Grocery Store',
-        amount: -85.32,
-        type: 'expense',
-        category: 'Food & Dining',
-        notes: 'Weekly groceries'
-      },
-      {
-        id: '2',
-        date: new Date(Date.now() - 86400000).toISOString(),
-        payee: 'Salary Deposit',
-        amount: 2600.00,
-        type: 'income',
-        category: 'Salary',
-        notes: 'Monthly salary'
-      },
-      {
-        id: '3',
-        date: new Date(Date.now() - 172800000).toISOString(),
-        payee: 'Electric Company',
-        amount: -120.45,
-        type: 'expense',
-        category: 'Utilities',
-        notes: 'Monthly electric bill'
-      },
-      {
-        id: '4',
-        date: new Date(Date.now() - 259200000).toISOString(),
-        payee: 'Coffee Shop',
-        amount: -4.50,
-        type: 'expense',
-        category: 'Food & Dining',
-        notes: 'Morning coffee'
-      },
-      {
-        id: '5',
-        date: new Date(Date.now() - 345600000).toISOString(),
-        payee: 'Gas Station',
-        amount: -45.20,
-        type: 'expense',
-        category: 'Transportation',
-        notes: 'Fill up tank'
-      }
-    ]
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return []
+    }
 
-    // Example of how to query Supabase (uncomment when schema is ready):
-    // const { data: transactions } = await supabase
-    //   .from('transactions')
-    //   .select(`
-    //     id,
-    //     date,
-    //     payee,
-    //     amount,
-    //     type,
-    //     notes,
-    //     categories(name)
-    //   `)
-    //   .order('date', { ascending: false })
+    const { data: transactions, error } = await supabase
+      .from('transactions')
+      .select(`
+        id,
+        date,
+        payee,
+        amount,
+        type,
+        notes,
+        categories (
+          name
+        )
+      `)
+      .eq('user_id', user.id)
+      .order('date', { ascending: false })
 
-    return mockTransactions
+    if (error) {
+      console.error('Error fetching transactions:', error)
+      return []
+    }
+
+    return transactions.map((t: any) => ({
+      id: t.id,
+      date: t.date,
+      payee: t.payee,
+      amount: Number(t.amount),
+      type: t.type,
+      category: t.categories?.name || 'Uncategorized',
+      notes: t.notes || ''
+    }))
   } catch (error) {
     console.error('Error fetching transactions:', error)
     return []
@@ -117,34 +88,42 @@ export default async function TransactionsPage() {
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {transactions.map((transaction) => (
-                  <tr key={transaction.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                      {formatDate(transaction.date)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className={`w-3 h-3 rounded-full mr-3 ${
-                          transaction.type === 'income' ? 'bg-green-400' : 'bg-red-400'
-                        }`} />
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
-                          {transaction.payee}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                      {transaction.category}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <span className={transaction.amount > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>
-                        {transaction.amount > 0 ? '+' : ''}{formatCurrency(transaction.amount)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-300 max-w-xs truncate">
-                      {transaction.notes}
+                {transactions.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                      No transactions yet. Add your first transaction to get started!
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  transactions.map((transaction) => (
+                    <tr key={transaction.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        {formatDate(transaction.date)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className={`w-3 h-3 rounded-full mr-3 ${
+                            transaction.type === 'income' ? 'bg-green-400' : 'bg-red-400'
+                          }`} />
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">
+                            {transaction.payee}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                        {transaction.category}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <span className={transaction.type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>
+                          {transaction.type === 'income' ? '+' : '-'}{formatCurrency(Math.abs(transaction.amount))}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-300 max-w-xs truncate">
+                        {transaction.notes}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
