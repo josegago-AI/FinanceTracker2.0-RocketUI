@@ -6,6 +6,20 @@ import Link from 'next/link'
 import { Home, CreditCard, Settings, Wallet, FolderOpen } from 'lucide-react'
 import { isAuthDisabled } from '@/lib/config/flags'
 
+/* ----------  Rocket-style nav-item  ---------- */
+function NavItem({ href, icon: Icon, children }: any) {
+  return (
+    <Link
+      href={href}
+      className="flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 hover:shadow-elevation-1 transition"
+    >
+      <Icon className="mr-3 h-5 w-5" />
+      {children}
+    </Link>
+  )
+}
+/* --------------------------------------------- */
+
 export default async function DashboardLayout({
   children,
 }: {
@@ -27,47 +41,17 @@ export default async function DashboardLayout({
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
       <div className="hidden md:flex md:w-64 md:flex-col">
-        <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-white dark:bg-gray-800 border-r">
+        <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-white dark:bg-gray-800 border-r shadow-elevation-1">
           <div className="flex items-center flex-shrink-0 px-4">
             <h1 className="text-xl font-semibold">FinanceFlow</h1>
           </div>
           <div className="mt-8 flex-grow flex flex-col">
             <nav className="flex-1 px-2 space-y-1">
-              <Link
-                href="/dashboard"
-                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <Home className="mr-3 h-5 w-5" />
-                Dashboard
-              </Link>
-              <Link
-                href="/dashboard/accounts"
-                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <Wallet className="mr-3 h-5 w-5" />
-                Accounts
-              </Link>
-              <Link
-                href="/dashboard/transactions"
-                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <CreditCard className="mr-3 h-5 w-5" />
-                Transactions
-              </Link>
-              <Link
-                href="/dashboard/categories"
-                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <FolderOpen className="mr-3 h-5 w-5" />
-                Categories
-              </Link>
-              <Link
-                href="/settings"
-                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <Settings className="mr-3 h-5 w-5" />
-                Settings
-              </Link>
+              <NavItem href="/dashboard" icon={Home}>Dashboard</NavItem>
+              <NavItem href="/dashboard/accounts" icon={Wallet}>Accounts</NavItem>
+              <NavItem href="/dashboard/transactions" icon={CreditCard}>Transactions</NavItem>
+              <NavItem href="/dashboard/categories" icon={FolderOpen}>Categories</NavItem>
+              <NavItem href="/settings" icon={Settings}>Settings</NavItem>
             </nav>
           </div>
         </div>
