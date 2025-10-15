@@ -1,6 +1,44 @@
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { StatsCard } from '@/src/components/dashboard/stats-card'
 
+async function getKPIs() {
+  return {
+    totalBalance: 12450.75,
+    monthlyIncome: 5200.00,
+    monthlyExpenses: 3850.25,
+    savingsRate: 26.0,
+  }
+}
+
+async function getRecentTransactions() {
+  return [
+    {
+      id: '1',
+      date: new Date().toISOString(),
+      payee: 'Grocery Store',
+      amount: -85.32,
+      type: 'expense',
+      category: 'Food & Dining',
+    },
+    {
+      id: '2',
+      date: new Date(Date.now() - 86400000).toISOString(),
+      payee: 'Salary Deposit',
+      amount: 2600.00,
+      type: 'income',
+      category: 'Salary',
+    },
+    {
+      id: '3',
+      date: new Date(Date.now() - 172800000).toISOString(),
+      payee: 'Electric Company',
+      amount: -120.45,
+      type: 'expense',
+      category: 'Utilities',
+    },
+  ]
+}
+
 export default async function DashboardPage() {
   const kpis = await getKPIs()
   const recentTransactions = await getRecentTransactions()
