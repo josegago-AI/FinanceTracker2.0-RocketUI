@@ -1,3 +1,4 @@
+export const metadata = { title: 'Dashboard' }
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { StatsCard } from '@/src/components/dashboard/stats-card'
 
