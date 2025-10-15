@@ -1,108 +1,33 @@
-export const metadata = { title: 'Dashboard' }
-import { formatCurrency, formatDate } from '@/lib/utils'
-import { StatsCard } from '@/src/components/dashboard/stats-card'
-
-async function getKPIs() {
-  return {
-    totalBalance: 12450.75,
-    monthlyIncome: 5200.00,
-    monthlyExpenses: 3850.25,
-    savingsRate: 26.0,
-  }
-}
-
-async function getRecentTransactions() {
-  return [
-    {
-      id: '1',
-      date: new Date().toISOString(),
-      payee: 'Grocery Store',
-      amount: -85.32,
-      type: 'expense',
-      category: 'Food & Dining',
-    },
-    {
-      id: '2',
-      date: new Date(Date.now() - 86400000).toISOString(),
-      payee: 'Salary Deposit',
-      amount: 2600.00,
-      type: 'income',
-      category: 'Salary',
-    },
-    {
-      id: '3',
-      date: new Date(Date.now() - 172800000).toISOString(),
-      payee: 'Electric Company',
-      amount: -120.45,
-      type: 'expense',
-      category: 'Utilities',
-    },
-  ]
-}
+import Header from '@/app/rocket-ui/components/ui/Header';
+import FinancialSummaryCard from '@/app/rocket-ui/components/ui/FinancialSummaryCard';
+import SpendingChart from '@/app/rocket-ui/components/ui/SpendingChart';
+import RecentTransactions from '@/app/rocket-ui/components/ui/RecentTransactions';
+import { createClient } from '@/lib/supabase/server';
 
 export default async function DashboardPage() {
-  const kpis = await getKPIs()
-  const recentTransactions = await getRecentTransactions()
-
+  const supabase = createClient();
+  const { data: txs } = await supabase.from('transactions').select('*').order('date', { ascending: false }).limit(5);
+  const kpis = {
+    totalBalance: 12450.75,
+    monthlyIncome: 5200,
+    monthlyExpenses: 3850.25,
+  };
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-          Welcome back! Here&apos;s your financial overview.
-        </p>
-      </div>
-
-      {/* Rocket KPI Cards */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-        <StatsCard title="Total Balance" value={formatCurrency(kpis.totalBalance)} icon="$" />
-        <StatsCard title="Monthly Income" value={formatCurrency(kpis.monthlyIncome)} icon="↑" />
-        <StatsCard title="Monthly Expenses" value={formatCurrency(kpis.monthlyExpenses)} icon="↓" />
-        <StatsCard title="Savings Rate" value={`${kpis.savingsRate}%`} icon="%" />
-      </div>
-
-      {/* Recent Transactions */}
-      <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
-            Recent Transactions
-          </h3>
-          <div className="flow-root">
-            <ul className="-my-5 divide-y divide-gray-200 dark:divide-gray-700">
-              {recentTransactions.map((transaction) => (
-                <li key={transaction.id} className="py-4">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex-shrink-0">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        transaction.type === 'income' ? 'bg-green-100 dark:bg-green-900' : 'bg-red-100 dark:bg-red-900'
-                      }`}>
-                        <span className={`text-sm font-medium ${
-                          transaction.type === 'income' ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'
-                        }`}>
-                          {transaction.type === 'income' ? '+' : '-'}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                        {transaction.payee}
-                      </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                        {transaction.category} • {formatDate(transaction.date)}
-                      </p>
-                    </div>
-                    <div className="inline-flex items-center text-base font-semibold">
-                      <span className={transaction.amount > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>
-                        {formatCurrency(Math.abs(transaction.amount))}
-                      </span>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+    <>
+      <Header />
+      <div className="max-w-7xl mx-auto px-6 py-8 pt-24">
+        <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <FinancialSummaryCard title="Total Balance" amount={kpis.totalBalance} change={5.2} changeType="positive" icon="Wallet" iconColor="bg-blue-500" />
+          <FinancialSummaryCard title="Monthly Income" amount={kpis.monthlyIncome} change={0} changeType="neutral" icon="TrendingUp" iconColor="bg-green-500" />
+          <FinancialSummaryCard title="Monthly Expenses" amount={kpis.monthlyExpenses} change={-12.3} changeType="positive" icon="TrendingDown" iconColor="bg-orange-500" />
+          <FinancialSummaryCard title="Savings Goal" amount={8500} change={15.7} changeType="positive" icon="Target" iconColor="bg-purple-500" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2"><SpendingChart /></div>
+          <RecentTransactions transactions={txs || []} />
         </div>
       </div>
-    </div>
-  )
+    </>
+  );
 }
