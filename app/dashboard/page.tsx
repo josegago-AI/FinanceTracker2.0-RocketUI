@@ -6,12 +6,24 @@ import { createClient } from '@/lib/supabase/server';
 
 export default async function DashboardPage() {
   const supabase = createClient();
-  const { data: txs } = await supabase.from('transactions').select('*').order('date', { ascending: false }).limit(5);
+
+  // Safe fetch with error fallback
+  const { data: txs, error } = await supabase
+    .from('transactions')
+    .select('*')
+    .order('date', { ascending: false })
+    .limit(5);
+
+  if (error) {
+    console.error('Supabase tx fetch:', error);
+  }
+
   const kpis = {
     totalBalance: 12450.75,
     monthlyIncome: 5200,
     monthlyExpenses: 3850.25,
   };
+
   return (
     <>
       <Header />
@@ -25,7 +37,7 @@ export default async function DashboardPage() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2"><SpendingChart /></div>
-          <RecentTransactions transactions={txs || []} />
+          <RecentTransactions transactions={txs ?? []} />
         </div>
       </div>
     </>
