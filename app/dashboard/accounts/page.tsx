@@ -1,3 +1,4 @@
+export const metadata = { title: 'Accounts' }
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
 
