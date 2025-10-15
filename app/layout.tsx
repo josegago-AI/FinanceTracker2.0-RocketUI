@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   noStore()
   return (
-    <html lang="en">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body className={inter.className}>
         {isAuthDisabled && (
           <div className="bg-yellow-100 border-b border-yellow-400 px-4 py-2 text-center text-sm text-yellow-900">
