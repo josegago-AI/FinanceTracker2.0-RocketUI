@@ -59,9 +59,9 @@ module.exports = {
 
       // Nice shadows/elevation like Rocket
       boxShadow: {
-        "elevation-1": "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)",
-        "elevation-2": "0 4px 6px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.08)",
-      },
+  'elevation-1': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+  'elevation-2': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+},
 
       keyframes: {
         "accordion-down": {
