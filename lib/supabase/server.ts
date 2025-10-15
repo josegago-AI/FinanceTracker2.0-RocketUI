@@ -1,37 +1,23 @@
-import 'server-only'
-
+import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { cache } from 'react'
 
-export const createClient = cache(() => {
-  const cookieStore = cookies()
-
+export async function createClient() {
+  const cookieStore = await cookies() // ← now inside request scope
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return cookieStore.getAll()
+        get(name: string) {
+          return cookieStore.get(name)?.value
         },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options as CookieOptions)
-            })
-          } catch {
-            // OK during RSC render; middleware can refresh the session.
-          }
+        set(name: string, value: string, options: any) {
+          cookieStore.set({ name, value, ...options })
+        },
+        remove(name: string, options: any) {
+          cookieStore.set({ name, value: '', ...options })
         },
       },
     }
   )
-})
-
-export async function getSessionUser() {
-  const supabase = createClient()
-  const { data: { user }, error } = await supabase.auth.getUser()
-  if (error) return null
-  return user ?? null
 }
