@@ -1,3 +1,4 @@
+export const metadata = { title: 'Transactions' }
 import { createClient } from '@/lib/supabase/server'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { TransactionRow } from '@/src/components/dashboard/transaction-row'
