@@ -1,3 +1,7 @@
+function openPlaceholder() {
+  alert('Modal coming next step')
+}
+
 import AddTxButton from '@/app/rocket-ui/components/ui/AddTxButton'
 import Header from '@/app/rocket-ui/components/ui/Header'
 import FinancialSummaryCard from '@/app/rocket-ui/components/ui/FinancialSummaryCard'
