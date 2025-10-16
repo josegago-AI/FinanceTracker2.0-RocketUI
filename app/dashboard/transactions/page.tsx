@@ -1,20 +1,16 @@
 export const metadata = { title: 'Transactions' }
 import { format } from 'date-fns'
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+
+async function getTransactions() {
+  // Server-only helper that already wraps cookies() correctly
+  const { createClient } = await import('@/lib/supabase/server')
+  const sb = createClient() // ← uses the helper that passes cookieStore internally
+  const { data } = await sb.from('transactions').select('*').order('date', { ascending: false })
+  return data ?? []
+}
 
 export default async function TransactionsPage() {
-  const cookieStore = cookies()
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { get: (name: string) => cookieStore.get(name)?.value } }
-  )
-
-  const { data: txs } = await supabase
-    .from('transactions')
-    .select('*')
-    .order('date', { ascending: false })
+  const txs = await getTransactions()
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8 pt-24">
@@ -30,7 +26,7 @@ export default async function TransactionsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {(txs ?? []).map((tx: any) => (
+            {txs.map((tx: any) => (
               <tr key={tx.id}>
                 <td className="px-4 py-3 text-sm">{format(new Date(tx.date), 'MMM d, yyyy')}</td>
                 <td className="px-4 py-3 text-sm font-medium">{tx.payee}</td>
