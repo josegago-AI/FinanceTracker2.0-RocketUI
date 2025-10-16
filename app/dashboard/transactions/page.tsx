@@ -1,18 +1,16 @@
 export const metadata = { title: 'Transactions' }
-import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
 import { format } from 'date-fns'
-
-async function getTransactions(cookieStore: any) {
-  const { createClient } = await import('@/lib/supabase/server')
-  const sb = createClient(cookieStore)
-  const { data } = await sb.from('transactions').select('*').order('date', { ascending: false })
-  return data ?? []
-}
+import { createClient } from '@/lib/supabase/server'
 
 export default async function TransactionsPage() {
   const cookieStore = cookies()
-  const txs = await getTransactions(cookieStore)
+  const supabase = createClient(cookieStore)
+
+  const { data: txs } = await supabase
+    .from('transactions')
+    .select('*')
+    .order('date', { ascending: false })
 
   return (
     <>
@@ -29,7 +27,7 @@ export default async function TransactionsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {txs.map((tx: any) => (
+              {(txs ?? []).map((tx: any) => (
                 <tr key={tx.id}>
                   <td className="px-4 py-3 text-sm">{format(new Date(tx.date), 'MMM d, yyyy')}</td>
                   <td className="px-4 py-3 text-sm font-medium">{tx.payee}</td>
