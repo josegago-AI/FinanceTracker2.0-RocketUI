@@ -57,6 +57,8 @@ export default async function DashboardPage() {
           <RecentTransactions transactions={txs} />
         </div>
       </div>
+       {/* Floating + button */}
+      <AddTxButton onClick={() => alert('Modal coming next step')} />
     </>
   )
 }
