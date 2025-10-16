@@ -1,4 +1,5 @@
 import 'server-only'
+import { cookies } from 'next/headers'
 
 import { isAuthDisabled } from '@/lib/config/flags'
 
@@ -8,7 +9,8 @@ export async function getSupabaseClient() {
     return supabaseAdmin()
   } else {
     const { createClient } = await import('@/lib/supabase/server')
-    return createClient()
+    const cookieStore = cookies()
+    return createClient(cookieStore)
   }
 }
 
@@ -20,7 +22,8 @@ export async function getUserId() {
     return profiles?.id || null
   } else {
     const { createClient } = await import('@/lib/supabase/server')
-    const supabase = createClient()
+    const cookieStore = cookies()
+    const supabase = createClient(cookieStore)
     const { data: { user } } = await supabase.auth.getUser()
     return user?.id || null
   }

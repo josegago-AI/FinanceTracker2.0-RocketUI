@@ -1,16 +1,15 @@
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
 export const metadata = { title: 'Transactions' }
+
 import { format } from 'date-fns'
 import { cookies } from 'next/headers'
-import { createServerClient } from '@supabase/ssr'
+import { createClient } from '@/lib/supabase/server'
 import FinancialSummaryCard from '@/app/rocket-ui/components/ui/FinancialSummaryCard'
 
 export default async function TransactionsPage() {
   const cookieStore = cookies()
-  const sb = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { get: (name: string) => cookieStore.get(name)?.value } }
-  )
+  const sb = createClient(cookieStore)
 
   const start = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
   const end   = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString()
@@ -28,7 +27,7 @@ export default async function TransactionsPage() {
   const totalIncome  = income?.reduce((s, t) => s + t.amount, 0) ?? 0
   const totalExpense = expense?.reduce((s, t) => s + Math.abs(t.amount), 0) ?? 0
   const netSavings   = totalIncome - totalExpense
-  const txCount      = count ?? 0
+  const txCount      = (typeof count === 'number' ? count : 0)
   const txs          = await sb.from('transactions').select('*').order('date', { ascending: false })
 
   return (

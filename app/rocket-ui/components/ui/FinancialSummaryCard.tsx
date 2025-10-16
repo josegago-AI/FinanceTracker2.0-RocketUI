@@ -7,7 +7,7 @@ interface Props {
   changeType: 'positive' | 'negative' | 'neutral';
   icon: string;
   iconColor: string;
-  formatter?: '$' | '%';
+  formatter?: '$' | '%' | '#';
 }
 
 export default function FinancialSummaryCard({
