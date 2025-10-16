@@ -56,7 +56,7 @@ export async function createAccount(formData: FormData) {
     return { error: error.message }
   }
 
-  revalidatePath('/dashboard/accounts')
+  revalidatePath('/accounts')
   return { success: true }
 }
 
@@ -93,7 +93,7 @@ export async function updateAccount(id: string, formData: FormData) {
     return { error: error.message }
   }
 
-  revalidatePath('/dashboard/accounts')
+  revalidatePath('/accounts')
   return { success: true }
 }
 
@@ -116,6 +116,6 @@ export async function deleteAccount(id: string) {
     return { error: error.message }
   }
 
-  revalidatePath('/dashboard/accounts')
+  revalidatePath('/accounts')
   return { success: true }
 }

@@ -5,9 +5,7 @@ import { unstable_noStore as noStore } from 'next/cache'
 import Link from 'next/link'
 import { Home, CreditCard, Settings, Wallet, FolderOpen } from 'lucide-react'
 import { isAuthDisabled } from '@/lib/config/flags'
-import { RocketHeader } from '@/src/components/layout/rocket-header'
 
-/* ----------  Rocket-style nav-item  ---------- */
 function NavItem({ href, icon: Icon, children }: any) {
   return (
     <Link
@@ -19,9 +17,8 @@ function NavItem({ href, icon: Icon, children }: any) {
     </Link>
   )
 }
-/* --------------------------------------------- */
 
-export default async function DashboardLayout({
+export default async function AccountsLayout({
   children,
 }: {
   children: React.ReactNode
@@ -40,7 +37,6 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Sidebar */}
       <div className="hidden md:flex md:w-64 md:flex-col">
         <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-white dark:bg-gray-800 border-r shadow-elevation-1">
           <div className="flex items-center flex-shrink-0 px-4">
@@ -58,9 +54,7 @@ export default async function DashboardLayout({
         </div>
       </div>
 
-      {/* Main content */}
       <div className="flex flex-col flex-1 overflow-hidden">
-        <RocketHeader />
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">

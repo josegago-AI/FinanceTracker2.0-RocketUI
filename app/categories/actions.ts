@@ -54,7 +54,7 @@ export async function createCategory(formData: FormData) {
     return { error: error.message }
   }
 
-  revalidatePath('/dashboard/categories')
+  revalidatePath('/categories')
   return { success: true }
 }
 
@@ -87,7 +87,7 @@ export async function updateCategory(id: string, formData: FormData) {
     return { error: error.message }
   }
 
-  revalidatePath('/dashboard/categories')
+  revalidatePath('/categories')
   return { success: true }
 }
 
@@ -110,6 +110,6 @@ export async function deleteCategory(id: string) {
     return { error: error.message }
   }
 
-  revalidatePath('/dashboard/categories')
+  revalidatePath('/categories')
   return { success: true }
 }
