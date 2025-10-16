@@ -1,1 +1,1 @@
-export const isAuthDisabled = process.env.AUTH_DISABLED === 'true'
+export const isAuthDisabled = () => process.env.AUTH_DISABLED === 'true'
