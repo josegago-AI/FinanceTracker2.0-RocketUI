@@ -6,6 +6,8 @@ import { supabaseBrowser } from '@/lib/supabase/browser'
 import Link from 'next/link'
 
 export default function SignInPage() {
+  if (isAuthDisabled()) redirect('/dashboard') // ← instant bounce
+  return ( /* your existing sign-in form */ )
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
