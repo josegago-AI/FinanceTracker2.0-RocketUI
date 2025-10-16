@@ -1,8 +1,3 @@
-function openPlaceholder() {
-  alert('Modal coming next step')
-}
-
-import AddTxButton from '@/app/rocket-ui/components/ui/AddTxButton'
 import Header from '@/app/rocket-ui/components/ui/Header'
 import FinancialSummaryCard from '@/app/rocket-ui/components/ui/FinancialSummaryCard'
 import SpendingChart from '@/app/rocket-ui/components/ui/SpendingChart'
@@ -61,8 +56,6 @@ export default async function DashboardPage() {
           <RecentTransactions transactions={txs} />
         </div>
       </div>
-       {/* Floating + button */}
-      <AddTxButton onClick={openPlaceholder} />
     </>
   )
 }
