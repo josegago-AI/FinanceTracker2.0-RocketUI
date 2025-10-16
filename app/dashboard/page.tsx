@@ -58,7 +58,7 @@ export default async function DashboardPage() {
         </div>
       </div>
        {/* Floating + button */}
-      <AddTxButton onClick={() => alert('Modal coming next step')} />
+      <AddTxButton onClick={openPlaceholder} />
     </>
   )
 }
