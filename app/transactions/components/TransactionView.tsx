@@ -1,12 +1,16 @@
 'use client'
 import { useMemo, useState } from 'react'
 import { format } from 'date-fns'
+import { Plus } from 'lucide-react'
 import FinancialSummaryCard from '@/app/rocket-ui/components/ui/FinancialSummaryCard'
 import TransactionFilters from '@/app/transactions/components/TransactionFilters'
+import { AddTransactionModal } from '@/app/transactions/components/AddTransactionModal'
 
 export default function TransactionView({ stats, txs }: { stats: any; txs: any[] }) {
   const [filters, setFilters] = useState({ search: '', category: 'all', account: 'all', dateRange: 'all', start: null as Date | null, end: null as Date | null })
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
+  // Your existing filtered logic stays the same...
   const filtered = useMemo(() => {
     let data = txs
     if (filters.search) {
@@ -48,6 +52,7 @@ export default function TransactionView({ stats, txs }: { stats: any; txs: any[]
                 <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Payee</th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Category</th>
                 <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Amount</th>
+                <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -59,12 +64,43 @@ export default function TransactionView({ stats, txs }: { stats: any; txs: any[]
                   <td className={`px-4 py-3 text-sm font-semibold text-right ${tx.amount < 0 ? 'text-red-500' : 'text-green-500'}`}>
                     {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Math.abs(tx.amount))}
                   </td>
+                  <td className="px-4 py-3 text-right">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => handleEdit(tx)}
+                        className="text-blue-600 hover:text-blue-800 text-sm"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(tx)}
+                        className="text-red-600 hover:text-red-800 text-sm"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+
+      {/* Floating Action Button */}
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg transition-colors"
+      >
+        <Plus className="h-6 w-6" />
+      </button>
+
+      {/* Add Transaction Modal */}
+      <AddTransactionModal 
+        open={isModalOpen} 
+        onOpenChange={setIsModalOpen}
+        onSuccess={() => window.location.reload()} // Simple refresh for now
+      />
     </>
   )
 }
