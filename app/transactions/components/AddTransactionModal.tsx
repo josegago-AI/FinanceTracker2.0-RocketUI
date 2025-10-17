@@ -114,15 +114,15 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
     }
   }
 
-  // 🎨 Rocket-style animated entry (matching your Rocket repo patterns)
-  const modalVariants = {
+  // 🎨 Rocket-style animated entry - FIXED VERSION
+const modalVariants = {
   hidden: { opacity: 0, scale: 0.95 },
   visible: { 
     opacity: 1, 
     scale: 1, 
     transition: { 
-      duration: 0.2, 
-      ease: [0.25, 0.46, 0.45, 0.94] // ✅ Proper easing array
+      duration: 0.2,
+      ease: "easeOut" // ✅ Use string easing name
     } 
   },
   exit: { 
@@ -130,7 +130,7 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
     scale: 0.95, 
     transition: { 
       duration: 0.15,
-      ease: [0.25, 0.46, 0.45, 0.94] // ✅ Proper easing array
+      ease: "easeIn" // ✅ Use string easing name
     } 
   }
 }
