@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { Plus, X } from 'lucide-react'
-import { addTransaction } from '@/app/transactions/actions'
+import { addTransaction } from '../actions'
 
 export default function AddTransactionModal({ onSuccess }: { onSuccess: () => void }) {
   const [open, setOpen] = useState(false)
