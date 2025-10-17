@@ -16,7 +16,9 @@ import {
   User,
   Menu,
   X,
-  DollarSign
+  DollarSign,
+  CreditCard,  // 🎯 Added for Accounts
+  Tag          // 🎯 Added for Categories
 } from 'lucide-react'
 
 interface NavigationItem {
@@ -32,6 +34,8 @@ export default function RocketHeader() {
   const navigationItems: NavigationItem[] = [
     { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { label: 'Transactions', path: '/transactions', icon: Receipt },
+    { label: 'Accounts', path: '/accounts', icon: CreditCard },      // 🎯 ADDED
+    { label: 'Categories', path: '/categories', icon: Tag },         // 🎯 ADDED
     { label: 'Budgets', path: '/budgets', icon: PiggyBank },
     { label: 'Goals', path: '/goals', icon: Target },
     { label: 'Reports', path: '/reports', icon: BarChart3 },
