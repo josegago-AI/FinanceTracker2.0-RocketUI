@@ -68,11 +68,11 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
       if (isNaN(amount)) throw new Error('Invalid amount')
 
       const transactionData = {
-        payee: formData.payee,
-        amount: formData.type === 'expense' ? -amount : amount,
-        category: formData.category,
-        date: date.toISOString(),
-        notes: formData.notes || null
+  payee: formData.payee,
+  amount: formData.type === 'expense' ? -amount : amount,
+  category: formData.category,
+  date: date.toISOString(),
+  notes: formData.notes || undefined
       }
 
       if (isEditMode) {
