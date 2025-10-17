@@ -21,7 +21,7 @@ async function getTransactionStats(sb: ReturnType<typeof createClient>) {
 
   const totalIncome  = income?.reduce((s, t) => s + t.amount, 0) ?? 0
   const totalExpense = expense?.reduce((s, t) => s + Math.abs(t.amount), 0) ?? 0
-  const netSavings   = totalIncome - totalExpense
+  const netIncome   = totalIncome - totalExpense
   const txCount      = count ?? 0
 
   return { totalIncome, totalExpense, netSavings, txCount }
