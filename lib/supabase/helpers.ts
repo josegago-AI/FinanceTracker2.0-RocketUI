@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 import { isAuthDisabled } from '@/lib/config/flags'
 
 export async function getSupabaseClient() {
-  if (isAuthDisabled) {
+  if (isAuthDisabled()) {
     const { supabaseAdmin } = await import('@/lib/supabase/admin')
     return supabaseAdmin()
   } else {
