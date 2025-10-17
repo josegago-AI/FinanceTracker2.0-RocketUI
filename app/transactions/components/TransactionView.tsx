@@ -1,14 +1,16 @@
 'use client'
 import { useMemo, useState } from 'react'
 import { format } from 'date-fns'
-import { Plus } from 'lucide-react'
+import { Plus, Edit, Trash2 } from 'lucide-react'
 import FinancialSummaryCard from '@/app/rocket-ui/components/ui/FinancialSummaryCard'
 import TransactionFilters from '@/app/transactions/components/TransactionFilters'
 import { AddTransactionModal } from '@/app/transactions/components/AddTransactionModal'
+import { deleteTransaction } from '@/app/transactions/action'
 
 export default function TransactionView({ stats, txs }: { stats: any; txs: any[] }) {
   const [filters, setFilters] = useState({ search: '', category: 'all', account: 'all', dateRange: 'all', start: null as Date | null, end: null as Date | null })
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingTx, setEditingTx] = useState<any>(null)
 
   // Your existing filtered logic stays the same...
   const filtered = useMemo(() => {
@@ -26,6 +28,33 @@ export default function TransactionView({ stats, txs }: { stats: any; txs: any[]
     }
     return data
   }, [txs, filters])
+
+  // 🔧 ADD THESE FUNCTIONS:
+  const handleEdit = (transaction: any) => {
+    setEditingTx(transaction)
+    setIsModalOpen(true)
+  }
+
+  const handleDelete = async (transaction: any) => {
+    if (confirm(`Are you sure you want to delete "${transaction.payee}"?`)) {
+      try {
+        await deleteTransaction(transaction.id)
+        window.location.reload() // Refresh to show updated data
+      } catch (error) {
+        console.error('Error deleting transaction:', error)
+        alert('Failed to delete transaction')
+      }
+    }
+  }
+
+  const handleModalSuccess = () => {
+    window.location.reload() // Refresh after add/edit
+  }
+
+  const handleModalOpen = (open: boolean) => {
+    setIsModalOpen(open)
+    if (!open) setEditingTx(null) // Clear editing state when closing
+  }
 
   return (
     <>
@@ -68,15 +97,17 @@ export default function TransactionView({ stats, txs }: { stats: any; txs: any[]
                     <div className="flex justify-end gap-2">
                       <button
                         onClick={() => handleEdit(tx)}
-                        className="text-blue-600 hover:text-blue-800 text-sm"
+                        className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+                        title="Edit transaction"
                       >
-                        Edit
+                        <Edit className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(tx)}
-                        className="text-red-600 hover:text-red-800 text-sm"
+                        className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
+                        title="Delete transaction"
                       >
-                        Delete
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </td>
@@ -95,11 +126,12 @@ export default function TransactionView({ stats, txs }: { stats: any; txs: any[]
         <Plus className="h-6 w-6" />
       </button>
 
-      {/* Add Transaction Modal */}
+      {/* Add/Edit Transaction Modal */}
       <AddTransactionModal 
         open={isModalOpen} 
-        onOpenChange={setIsModalOpen}
-        onSuccess={() => window.location.reload()} // Simple refresh for now
+        onOpenChange={handleModalOpen}
+        transaction={editingTx}
+        onSuccess={handleModalSuccess}
       />
     </>
   )
