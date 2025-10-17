@@ -3,6 +3,9 @@ import { isAuthDisabled } from '@/lib/config/flags'
 import { supabaseBrowser } from '@/lib/supabase/browser'
 import Link from 'next/link'
 
+import { redirect } from 'next/navigation'
+import { isAuthDisabled } from '@/lib/config/flags'
+
 export default async function SignUpPage() {
   if (isAuthDisabled()) redirect('/dashboard')
   return <SignUpForm />
