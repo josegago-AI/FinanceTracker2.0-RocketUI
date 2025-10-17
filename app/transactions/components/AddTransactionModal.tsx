@@ -116,10 +116,24 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
 
   // 🎨 Rocket-style animated entry (matching your Rocket repo patterns)
   const modalVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.2, ease: "easeOut" } },
-    exit: { opacity: 0, scale: 0.95, transition: { duration: 0.15 } }
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { 
+    opacity: 1, 
+    scale: 1, 
+    transition: { 
+      duration: 0.2, 
+      ease: [0.25, 0.46, 0.45, 0.94] // ✅ Proper easing array
+    } 
+  },
+  exit: { 
+    opacity: 0, 
+    scale: 0.95, 
+    transition: { 
+      duration: 0.15,
+      ease: [0.25, 0.46, 0.45, 0.94] // ✅ Proper easing array
+    } 
   }
+}
 
   const { icon: TypeIcon, color: typeColor } = getTransactionIcon(formData.type)
 
