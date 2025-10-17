@@ -11,7 +11,7 @@ export default async function SignInPage() {
 }
 
 function SignInForm() {
-  'use client'
+  'use client' // ←  MUST be **inside** the function body
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
