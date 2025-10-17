@@ -185,8 +185,9 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
                 <Calendar 
                   mode="single" 
                   selected={date} 
-                  onSelect={setDate} 
+                  onSelect={(newDate) => newDate && setDate(newDate)} 
                   initialFocus 
+                  required={false}
                 />
               </PopoverContent>
             </Popover>
