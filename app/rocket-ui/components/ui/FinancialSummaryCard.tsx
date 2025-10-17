@@ -24,8 +24,7 @@ export default function FinancialSummaryCard({
   const display =
   formatter === '#' ? String(Math.round(amount)) :
   formatter === '%' ? `${(amount * 100).toFixed(1)}%` :
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' 
-  }).format(amount);
+  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
 
   return (
     <div className="bg-card rounded-xl p-5 shadow-elevation-1">
