@@ -114,23 +114,23 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
     }
   }
 
-  // 🎨 Rocket-style animated entry - FIXED VERSION
+  // 🎨 Rocket-style animated entry - SIMPLIFIED
 const modalVariants = {
   hidden: { opacity: 0, scale: 0.95 },
   visible: { 
     opacity: 1, 
     scale: 1, 
     transition: { 
-      duration: 0.2,
-      ease: "easeOut" // ✅ Use string easing name
+      duration: 0.2
+      // ✅ No easing - uses default
     } 
   },
   exit: { 
     opacity: 0, 
     scale: 0.95, 
     transition: { 
-      duration: 0.15,
-      ease: "easeIn" // ✅ Use string easing name
+      duration: 0.15
+      // ✅ No easing - uses default
     } 
   }
 }
