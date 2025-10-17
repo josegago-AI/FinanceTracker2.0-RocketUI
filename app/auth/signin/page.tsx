@@ -1,17 +1,10 @@
-import { redirect } from 'next/navigation'
-import { isAuthDisabled } from '@/lib/config/flags'
+'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabaseBrowser } from '@/lib/supabase/browser'
 import Link from 'next/link'
 
-export default async function SignInPage() {
-  if (isAuthDisabled()) redirect('/dashboard')
-  return <SignInForm />
-}
-
-function SignInForm() {
-  'use client' // ←  MUST be **inside** the function body
+export default function SignInPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
