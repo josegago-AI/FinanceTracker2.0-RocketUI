@@ -15,7 +15,11 @@ export default function TransactionView({ stats, txs }: { stats: any; txs: any[]
     }
     if (filters.category !== 'all') data = data.filter((t: any) => t.category === filters.category)
     if (filters.account !== 'all') data = data.filter((t: any) => t.account === filters.account)
-    if (filters.start && filters.end) data = data.filter((t: any) => new Date(t.date) >= filters.start && new Date(t.date) <= filters.end)
+    if (filters.start && filters.end) {
+      const startDate = filters.start
+      const endDate = filters.end
+      data = data.filter((t: any) => new Date(t.date) >= startDate && new Date(t.date) <= endDate)
+    }
     return data
   }, [txs, filters])
 
