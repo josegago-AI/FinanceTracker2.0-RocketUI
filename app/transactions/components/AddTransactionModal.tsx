@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { CalendarIcon, Loader2, DollarSign, Tag, FileText, Clock, Plus, Edit } from 'lucide-react'
+import { CalendarIcon, Loader2, DollarSign, TrendingUp, TrendingDown, Wallet, CreditCard, Plus, Edit, X } from 'lucide-react'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { addTransaction, updateTransaction } from '@/app/transactions/action'
@@ -19,6 +19,13 @@ interface AddTransactionModalProps {
   onOpenChange: (open: boolean) => void
   transaction?: any
   onSuccess?: () => void
+}
+
+// 🎯 Rocket-style icon mapping (from your Rocket repo pattern)
+const getTransactionIcon = (type: 'income' | 'expense') => {
+  return type === 'income' ? 
+    { icon: TrendingUp, color: 'text-success' } : 
+    { icon: TrendingDown, color: 'text-destructive' }
 }
 
 export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess }: AddTransactionModalProps) {
@@ -36,17 +43,17 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
   const modalTitle = isEditMode ? 'Edit Transaction' : 'Add New Transaction'
   const submitButtonText = isEditMode ? 'Update Transaction' : 'Add Transaction'
 
-  // 🎨 Rocket-style categories with icons
+  // 🎨 Rocket-style categories (matching your Rocket repo aesthetic)
   const categories = [
-    { value: 'food', label: 'Food & Dining', icon: '🍽️', color: 'bg-orange-100 text-orange-800' },
-    { value: 'transport', label: 'Transportation', icon: '🚗', color: 'bg-blue-100 text-blue-800' },
-    { value: 'shopping', label: 'Shopping', icon: '🛍️', color: 'bg-purple-100 text-purple-800' },
-    { value: 'entertainment', label: 'Entertainment', icon: '🎬', color: 'bg-pink-100 text-pink-800' },
-    { value: 'bills', label: 'Bills & Utilities', icon: '💡', color: 'bg-yellow-100 text-yellow-800' },
-    { value: 'healthcare', label: 'Healthcare', icon: '🏥', color: 'bg-red-100 text-red-800' },
-    { value: 'salary', label: 'Salary', icon: '💰', color: 'bg-green-100 text-green-800' },
-    { value: 'freelance', label: 'Freelance', icon: '💼', color: 'bg-indigo-100 text-indigo-800' },
-    { value: 'other', label: 'Other', icon: '📦', color: 'bg-gray-100 text-gray-800' }
+    { value: 'food', label: 'Food & Dining', icon: '🍽️', color: 'bg-orange-100 text-orange-800 hover:bg-orange-200' },
+    { value: 'transport', label: 'Transportation', icon: '🚗', color: 'bg-blue-100 text-blue-800 hover:bg-blue-200' },
+    { value: 'shopping', label: 'Shopping', icon: '🛍️', color: 'bg-purple-100 text-purple-800 hover:bg-purple-200' },
+    { value: 'entertainment', label: 'Entertainment', icon: '🎬', color: 'bg-pink-100 text-pink-800 hover:bg-pink-200' },
+    { value: 'bills', label: 'Bills & Utilities', icon: '💡', color: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' },
+    { value: 'healthcare', label: 'Healthcare', icon: '🏥', color: 'bg-red-100 text-red-800 hover:bg-red-200' },
+    { value: 'salary', label: 'Salary', icon: '💰', color: 'bg-green-100 text-green-800 hover:bg-green-200' },
+    { value: 'freelance', label: 'Freelance', icon: '💼', color: 'bg-indigo-100 text-indigo-800 hover:bg-indigo-200' },
+    { value: 'other', label: 'Other', icon: '📦', color: 'bg-gray-100 text-gray-800 hover:bg-gray-200' }
   ]
 
   // 🎯 Pre-populate form when editing
@@ -107,54 +114,68 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
     }
   }
 
-  // 🎨 Rocket-style animated entry
+  // 🎨 Rocket-style animated entry (matching your Rocket repo patterns)
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: { opacity: 1, scale: 1, transition: { duration: 0.2, ease: "easeOut" } },
     exit: { opacity: 0, scale: 0.95, transition: { duration: 0.15 } }
   }
 
+  const { icon: TypeIcon, color: typeColor } = getTransactionIcon(formData.type)
+
   return (
     <AnimatePresence>
       {open && (
         <Dialog open={open} onOpenChange={onOpenChange}>
-          <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden">
+          <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-border elevation-3">
             <motion.div
               variants={modalVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
+              className="bg-card text-card-foreground"
             >
-              {/* 🎨 Rocket-style header with gradient */}
-              <DialogHeader className="p-6 pb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                <DialogTitle className="text-xl font-semibold flex items-center gap-2">
-                  {isEditMode ? <Edit className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
-                  {modalTitle}
-                </DialogTitle>
-                <p className="text-blue-100 text-sm mt-1">
-                  {isEditMode ? 'Update your transaction details' : 'Track your financial activity'}
+              {/* 🎨 Rocket-style header - matching your Rocket repo aesthetic */}
+              <DialogHeader className="p-6 pb-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-b border-border">
+                <div className="flex items-center justify-between">
+                  <DialogTitle className="text-xl font-semibold flex items-center gap-2">
+                    <div className={`p-2 rounded-lg bg-white/20 backdrop-blur-sm`}>
+                      {isEditMode ? <Edit className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+                    </div>
+                    {modalTitle}
+                  </DialogTitle>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onOpenChange(false)}
+                    className="h-8 w-8 p-0 hover:bg-white/20 rounded-lg"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <p className="text-primary-foreground/80 text-sm mt-1">
+                  {isEditMode ? 'Update your transaction details' : 'Track your financial activity with precision'}
                 </p>
               </DialogHeader>
 
-              {/* 🎯 Rocket-style form with better spacing */}
+              {/* 🎯 Rocket-style form - matching your Rocket repo patterns */}
               <form onSubmit={handleSubmit} className="p-6 pt-4 space-y-5">
-                {/* Amount & Type Row */}
+                {/* Amount & Type Row - Rocket-style layout */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                      <DollarSign className="h-4 w-4 text-gray-500" />
+                    <Label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                      <DollarSign className="h-4 w-4" />
                       Amount *
                     </Label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
                       <Input
                         type="number"
                         step="0.01"
                         min="0.01"
                         value={formData.amount}
                         onChange={(e) => setFormData({...formData, amount: e.target.value})}
-                        className="pl-8 pr-4 py-2 border-2 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg transition-all"
+                        className="pl-8 pr-4 py-2 bg-background border-2 border-border focus:border-ring focus:ring-ring rounded-lg transition-all"
                         placeholder="0.00"
                         required
                         disabled={isLoading}
@@ -163,48 +184,54 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <Label className="text-sm font-medium text-muted-foreground">
                       Type *
                     </Label>
                     <Select value={formData.type} onValueChange={(value) => setFormData({...formData, type: value as 'income' | 'expense'})} disabled={isLoading}>
-                      <SelectTrigger className="w-full border-2 border-gray-200 focus:border-blue-500 rounded-lg">
-                        <SelectValue />
+                      <SelectTrigger className="w-full bg-background border-2 border-border focus:border-ring rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <TypeIcon className={`h-4 w-4 ${typeColor}`} />
+                          <SelectValue />
+                        </div>
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="expense" className="flex items-center gap-2">
-                          <span className="text-red-500">↗</span> Expense
+                          <TrendingDown className="h-4 w-4 text-destructive" />
+                          Expense
                         </SelectItem>
                         <SelectItem value="income" className="flex items-center gap-2">
-                          <span className="text-green-500">↘</span> Income
+                          <TrendingUp className="h-4 w-4 text-success" />
+                          Income
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
 
-                {/* Payee */}
+                {/* Payee - Rocket-style input */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                    <Tag className="h-4 w-4 text-gray-500" />
+                  <Label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                    <Wallet className="h-4 w-4" />
                     Payee / Description *
                   </Label>
                   <Input
                     value={formData.payee}
                     onChange={(e) => setFormData({...formData, payee: e.target.value})}
-                    className="py-2 border-2 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg transition-all"
+                    className="py-2 bg-background border-2 border-border focus:border-ring focus:ring-ring rounded-lg transition-all"
                     placeholder="Where did you spend / receive money?"
                     required
                     disabled={isLoading}
                   />
                 </div>
 
-                {/* Category */}
+                {/* Category - Rocket-style categories */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                    📂 Category *
+                  <Label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                    <CreditCard className="h-4 w-4" />
+                    Category *
                   </Label>
                   <Select value={formData.category} onValueChange={(value) => setFormData({...formData, category: value})} disabled={isLoading}>
-                    <SelectTrigger className="w-full border-2 border-gray-200 focus:border-blue-500 rounded-lg">
+                    <SelectTrigger className="w-full bg-background border-2 border-border focus:border-ring rounded-lg">
                       <SelectValue placeholder="Choose a category" />
                     </SelectTrigger>
                     <SelectContent className="max-h-[200px]">
@@ -220,10 +247,10 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
                   </Select>
                 </div>
 
-                {/* Date */}
+                {/* Date - Rocket-style date picker */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                    <CalendarIcon className="h-4 w-4 text-gray-500" />
+                  <Label className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                    <CalendarIcon className="h-4 w-4" />
                     Date *
                   </Label>
                   <Popover>
@@ -231,7 +258,7 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
                       <Button 
                         variant="outline" 
                         className={cn(
-                          "w-full justify-start text-left font-normal py-2 border-2 border-gray-200 hover:border-blue-500 rounded-lg transition-all",
+                          "w-full justify-start text-left font-normal py-2 bg-background border-2 border-border hover:border-ring rounded-lg transition-all",
                           !date && "text-muted-foreground"
                         )}
                         disabled={isLoading}
@@ -241,7 +268,7 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
-                      <div className="bg-white rounded-lg shadow-xl border border-gray-200 p-2">
+                      <div className="bg-popover border border-border rounded-lg p-2 elevation-2">
                         <Calendar 
                           mode="single" 
                           selected={date} 
@@ -254,7 +281,7 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
                             month: "space-y-2",
                             caption: "flex justify-center pt-1 relative items-center text-sm font-medium",
                             nav: "space-x-1 flex items-center",
-                            nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 border border-gray-200 rounded-md",
+                            nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 border border-border rounded-md",
                             nav_button_previous: "absolute left-1",
                             nav_button_next: "absolute right-1",
                             table: "w-full border-collapse space-y-1",
@@ -262,9 +289,9 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
                             head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
                             row: "flex w-full mt-2",
                             cell: "h-9 w-9 text-center text-sm p-0 relative",
-                            day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-blue-100 rounded-md transition-colors",
-                            day_selected: "bg-blue-600 text-white hover:bg-blue-700 focus:bg-blue-600 focus:text-white",
-                            day_today: "bg-blue-100 text-blue-800",
+                            day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-accent rounded-md transition-colors",
+                            day_selected: "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary focus:text-primary-foreground",
+                            day_today: "bg-accent text-accent-foreground",
                             day_outside: "text-muted-foreground opacity-50",
                             day_disabled: "text-muted-foreground opacity-50",
                             day_hidden: "invisible",
@@ -275,30 +302,29 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
                   </Popover>
                 </div>
 
-                {/* Notes */}
+                {/* Notes - Rocket-style */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                    <FileText className="h-4 w-4 text-gray-500" />
+                  <Label className="text-sm font-medium text-muted-foreground">
                     Notes (Optional)
                   </Label>
                   <Input
                     value={formData.notes}
                     onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                    className="py-2 border-2 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg transition-all"
-                    placeholder="Any additional details..."
+                    className="py-2 bg-background border-2 border-border focus:border-ring focus:ring-ring rounded-lg transition-all"
+                    placeholder="Additional details..."
                     disabled={isLoading}
                   />
                 </div>
               </form>
 
-              {/* 🎯 Rocket-style footer with better buttons */}
-              <div className="flex justify-end space-x-3 p-6 pt-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200">
+              {/* 🎯 Rocket-style footer - matching your Rocket repo patterns */}
+              <div className="flex justify-end space-x-3 p-6 pt-4 bg-muted/30 border-t border-border">
                 <Button 
                   type="button" 
                   variant="outline" 
                   onClick={() => onOpenChange(false)}
                   disabled={isLoading}
-                  className="px-4 py-2 border-2 border-gray-300 hover:border-gray-400 rounded-lg transition-all"
+                  className="px-4 py-2 border-2 border-border hover:bg-accent hover:text-accent-foreground rounded-lg transition-all"
                 >
                   Cancel
                 </Button>
@@ -306,7 +332,7 @@ export function AddTransactionModal({ open, onOpenChange, transaction, onSuccess
                   type="submit" 
                   disabled={isLoading}
                   onClick={handleSubmit}
-                  className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg"
+                  className="px-6 py-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg transition-all shadow-md hover:shadow-lg"
                 >
                   {isLoading ? (
                     <>
