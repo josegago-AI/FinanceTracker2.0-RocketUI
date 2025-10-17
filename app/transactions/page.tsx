@@ -3,6 +3,8 @@ import { format } from 'date-fns'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import FinancialSummaryCard from '@/app/rocket-ui/components/ui/FinancialSummaryCard'
+import TransactionFilters from '@/app/transactions/components/TransactionFilters'
+import { useMemo, useState } from 'react'
 
 /* ----------  stats  ---------- */
 async function getTransactionStats(sb: ReturnType<typeof createClient>) {
@@ -38,6 +40,21 @@ export default async function TransactionsPage() {
   const stats = await getTransactionStats(sb)
   const txs   = await getTransactions(sb)
 
+  // client-state for filters
+  const [filters, setFilters] = useState({ search: '', category: 'all', account: 'all', dateRange: 'all', start: null as Date | null, end: null as Date | null })
+
+  const filtered = useMemo(() => {
+    let data = txs
+    if (filters.search) {
+      const s = filters.search.toLowerCase()
+      data = data.filter((t: any) => t.payee.toLowerCase().includes(s) || t.notes?.toLowerCase().includes(s))
+    }
+    if (filters.category !== 'all') data = data.filter((t: any) => t.category === filters.category)
+    if (filters.account !== 'all') data = data.filter((t: any) => t.account === filters.account)
+    if (filters.start && filters.end) data = data.filter((t: any) => new Date(t.date) >= filters.start && new Date(t.date) <= filters.end)
+    return data
+  }, [txs, filters])
+
   return (
     <>
       <div className="max-w-7xl mx-auto px-6 py-8 pt-24">
@@ -51,7 +68,10 @@ export default async function TransactionsPage() {
           <FinancialSummaryCard title="# Transactions" amount={stats.txCount}    change={0} changeType="neutral" icon="CreditCard" iconColor="bg-purple-500" formatter="#"/>
         </div>
 
-        {/* Table (simple for now) */}
+        {/* Filters */}
+        <TransactionFilters onFiltersChange={setFilters} />
+
+        {/* Table */}
         <div className="bg-card rounded-xl shadow-elevation-1 overflow-hidden">
           <table className="min-w-full divide-y divide-border">
             <thead className="bg-muted/30">
@@ -63,7 +83,7 @@ export default async function TransactionsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {txs.map((tx: any) => (
+              {filtered.map((tx: any) => (
                 <tr key={tx.id}>
                   <td className="px-4 py-3 text-sm">{format(new Date(tx.date), 'MMM d, yyyy')}</td>
                   <td className="px-4 py-3 text-sm font-medium">{tx.payee}</td>
