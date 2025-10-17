@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={inter.className}>
-        {isAuthDisabled && (
+        {isAuthDisabled() && (
           <div className="bg-yellow-100 border-b border-yellow-400 px-4 py-2 text-center text-sm text-yellow-900">
             <strong>Authless Dev Mode</strong> - No login required, using admin client
           </div>
