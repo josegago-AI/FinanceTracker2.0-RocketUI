@@ -1,10 +1,5 @@
 import { redirect } from 'next/navigation'
 import { isAuthDisabled } from '@/lib/config/flags'
-import { supabaseBrowser } from '@/lib/supabase/browser'
-import Link from 'next/link'
-
-import { redirect } from 'next/navigation'
-import { isAuthDisabled } from '@/lib/config/flags'
 
 export default async function SignUpPage() {
   if (isAuthDisabled()) redirect('/dashboard')
@@ -13,6 +8,11 @@ export default async function SignUpPage() {
 
 function SignUpForm() {
   'use client'
+  import { useState } from 'react'
+  import { useRouter } from 'next/navigation'
+  import { supabaseBrowser } from '@/lib/supabase/browser'
+  import Link from 'next/link'
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
