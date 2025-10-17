@@ -15,7 +15,7 @@ export async function getSupabaseClient() {
 }
 
 export async function getUserId() {
-  if (isAuthDisabled) {
+  if (isAuthDisabled()) {
     const { supabaseAdmin } = await import('@/lib/supabase/admin')
     const supabase = supabaseAdmin()
     const { data: profiles } = await supabase.from('profiles').select('id').limit(1).single()
