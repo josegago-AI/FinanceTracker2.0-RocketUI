@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import RocketHeader from '@/app/components/layout/RocketHeader'
+
+import SiteHeaderGate from '@/app/components/layout/SiteHeaderGate'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,10 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* 🎯 Rocket-style header - appears on all pages */}
-        <RocketHeader />
         
-        {/* 🎯 Main content with proper spacing for fixed header */}
+        {/* 🎯 Header gated to not show on /auth/* */}
+        <SiteHeaderGate />
+        
+        
+        {/* 🎯 Main content with spacing for fixed header when visible */}
         <main className="pt-16 min-h-screen bg-background">
           {children}
         </main>
