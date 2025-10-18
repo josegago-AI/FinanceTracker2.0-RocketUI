@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  const authDisabled = process.env.AUTH_DISABLED === 'true'
+  const authDisabled = process.env.AUTH_DISABLED === 
 
   if (authDisabled) {
     return NextResponse.next()
