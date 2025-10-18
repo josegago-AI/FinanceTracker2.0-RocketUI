@@ -25,6 +25,53 @@ export async function getAccounts() {
   return data
 }
 
+export async function getAccountStats() {
+  const supabase = await getSupabaseClient()
+  const userId = await getUserId()
+
+  if (!userId) {
+    return {
+      totalBalance: 0,
+      activeAccountsCount: 0,
+      accountsByType: {},
+      monthlyChange: 0
+    }
+  }
+
+  const { data: accounts, error } = await supabase
+    .from('accounts')
+    .select('*')
+    .eq('user_id', userId)
+
+  if (error || !accounts) {
+    console.error('Error fetching account stats:', error)
+    return {
+      totalBalance: 0,
+      activeAccountsCount: 0,
+      accountsByType: {},
+      monthlyChange: 0
+    }
+  }
+
+  const totalBalance = accounts
+    .filter(a => a.is_active)
+    .reduce((sum, a) => sum + Number(a.balance), 0)
+
+  const activeAccountsCount = accounts.filter(a => a.is_active).length
+
+  const accountsByType = accounts.reduce((acc, account) => {
+    acc[account.type] = (acc[account.type] || 0) + 1
+    return acc
+  }, {} as Record<string, number>)
+
+  return {
+    totalBalance,
+    activeAccountsCount,
+    accountsByType,
+    monthlyChange: 0
+  }
+}
+
 export async function createAccount(formData: FormData) {
   const supabase = await getSupabaseClient()
   const userId = await getUserId()
