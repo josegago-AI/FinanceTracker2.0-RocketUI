@@ -1,62 +1,41 @@
+
+
+
+
+
+
+
 // app/transactions/page.tsx
+import { headers } from "next/headers";
 import Link from "next/link";
 import BackLink from "./components/BackLink";
-import TransactionView from "@/app/transactions/components/TransactionView";
-import { listTransactions } from "@/lib/transactions/dal";
+import TransactionView from "./TransactionView"; // Client component (no server functions passed)
+import { listTransactions } from "@/lib/tx/dal";
 import { getUserId } from "@/lib/auth/getUserId";
+import { getSessionUser } from "@/lib/supabase/session"; // your SSR session helper
+import { parseTxQuery } from "@/lib/tx/query";
+
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export const revalidate = 0;
 
-export default async function TransactionsPage({
-  searchParams,
-}: {
-  searchParams: Record<string, string | string[] | undefined>;
-}) {
-  // Parse URL params
-  const limit = Number(searchParams.limit ?? 50);
-  const cursor = (searchParams.cursor as string) ?? null;
-
-  // Auth (SSR) – and use it in DAL call
-  const userId = await getUserId();
-
-  // Server-side data fetch (RLS-aware)
-  const { data, nextCursor, totals } = await listTransactions({
-    userId,
-    limit,
-    cursor,
-    sort: "date",
-    dir: "desc",
-  });
-
-  const stats = {
-    totalIncome: totals?.income ?? 0,
-    totalExpense: Math.abs(totals?.expense ?? 0),
-    netSavings: totals?.net ?? 0,
-    txCount: data.length,
-  };
-
-  return (
-    <div className="min-h-screen">
-      <TransactionView stats={stats} txs={data} />
-
-      <div className="mx-auto max-w-7xl px-6 pb-10 flex items-center justify-between">
-        <BackLink className="inline-flex items-center rounded-lg border px-3 py-2 text-sm hover:bg-gray-50" />
-        {nextCursor ? (
-          <Link
-            href={`/transactions?limit=${limit}&cursor=${encodeURIComponent(nextCursor)}`}
-            className="inline-flex items-center rounded-lg border px-3 py-2 text-sm hover:bg-gray-50"
-          >
-            Next →
-          </Link>
-        ) : (
-          <span className="inline-flex items-center rounded-lg border px-3 py-2 text-sm text-gray-400">
-            Next →
-          </span>
-        )}
-      </div>
-    </div>
-  );
+export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
+const user = await getSessionUser();
+if (!user) {
+// redirect to /login or render anon state
+return null;
 }
 
+const params = parseTxQuery(searchParams);
+const { data, nextCursor, totals } = await listTransactions({ ...params, userId: user.id });
+
+return (
+<TransactionView
+initialQuery={params}
+rows={data}
+nextCursor={nextCursor}
+totals={totals}
+/>
+);
+}
