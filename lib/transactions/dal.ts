@@ -1,13 +1,12 @@
-import { supabaseAnon, supabaseService } from "@/lib/supabase/clients";
+import { supabaseService } from "@/lib/supabase/clients";
+import { createReadOnlyClient } from "@/lib/supabase/server";
 import { TxListParams, TxRow, Totals } from "./types";
 import { applyFilters, applySort } from "./query";
 
 export async function listTransactions(p: TxListParams) {
   const limit = Math.min(Math.max(p.limit ?? 50, 1), 200);
-  let q = applyFilters(
-    supabaseAnon().from("transactions").select("*"),
-    p
-  );
+  const sb = createReadOnlyClient();
+  let q = applyFilters(sb.from("transactions").select("*"), p);
 
   if (p.cursor) q = q.lt("id", p.cursor); // id-based cursor
   q = applySort(q, p.sort, p.dir).limit(limit);
