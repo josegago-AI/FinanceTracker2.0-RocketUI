@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const txSortFields = ["date", "amount", "created_at", "payee"] as const;
+export const txSortFields = ["date", "amount", "payee"] as const;
 export type TxSortField = typeof txSortFields[number];
 
 export const txQuerySchema = z.object({
