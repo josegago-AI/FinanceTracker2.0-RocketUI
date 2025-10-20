@@ -24,7 +24,18 @@ export default async function TransactionsPage({
   }
 
   // ✅ 2. Parse and validate URL filters/sorting
-  const params = parseTxQuery(searchParams);
+  const dalParams = {
+    userId,
+    q: params.q,
+    start: params.dateFrom,
+    end: params.dateTo,
+    categoryId: params.category,
+    tag: params.tags, // if you later support multiple tags, split here
+    sort: params.sort as "date" | "amount" | "payee",
+    dir: params.dir,
+    limit: params.limit,
+    cursor: params.cursor ?? null,
+  };
 
   // ✅ 3. Fetch filtered, sorted data from DAL (with RLS)
   const { data, nextCursor, totals } = await listTransactions({
