@@ -1,43 +1,27 @@
-export const dynamic = "force-dynamic";
-
 import Link from "next/link";
 import { headers } from "next/headers";
 
-type TxRow = {
-  id: string;
-  date: string;
-  payee: string;
-  amount: number;
-  category_id?: string | null;
-  tags?: string[] | null;
-};
+export const dynamic = "force-dynamic";
 
+type TxRow = {
+  id: string; date: string; payee: string; amount: number;
+  category_id?: string | null; tags?: string[] | null;
+};
 type ListResp = { data: TxRow[]; nextCursor: string | null };
 
 function toMoney(n: number) {
   return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(n);
 }
 
-// Build an absolute base URL that works locally and on Vercel
 function getBaseUrl() {
-  // 1) Prefer explicit env (set this in Vercel)
   if (process.env.NEXT_PUBLIC_BASE_URL) return process.env.NEXT_PUBLIC_BASE_URL;
-
-  // 2) Derive from request headers (works on Vercel)
   const h = headers();
   const host = h.get("x-forwarded-host") || h.get("host");
   const proto = h.get("x-forwarded-proto") || "https";
-  if (host) return `${proto}://${host}`;
-
-  // 3) Fallback to localhost for dev
-  return "http://localhost:3000";
+  return host ? `${proto}://${host}` : "http://localhost:3000";
 }
 
-export default async function TransactionsPage({
-  searchParams,
-}: {
-  searchParams: { [k: string]: string | string[] | undefined };
-}) {
+export default async function TransactionsPage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const limit = Number(searchParams.limit ?? 50);
   const cursor = (searchParams.cursor as string) ?? null;
 
@@ -46,14 +30,20 @@ export default async function TransactionsPage({
   if (cursor) query.set("cursor", cursor);
 
   const base = getBaseUrl();
-  const res = await fetch(`${base}/api/transactions?` + query.toString(), {
+  const h = headers();
+
+  const res = await fetch(`${base}/api/transactions?${query.toString()}`, {
     cache: "no-store",
+    // ✅ forward the incoming request cookies to the API so Supabase SSR sees the session
+    headers: {
+      cookie: h.get("cookie") ?? "",
+    },
   });
 
   if (!res.ok) {
     return (
       <div className="p-6">
-        <h1 className="text-xl font-semibold">Transactions</h1>
+        <h1 className="text-2xl font-semibold">Transactions</h1>
         <p className="mt-4 text-red-600">
           Failed to load transactions: {res.status} {res.statusText}
         </p>
@@ -113,10 +103,7 @@ export default async function TransactionsPage({
       <div className="flex items-center justify-between">
         <Link
           href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            history.back();
-          }}
+          onClick={(e) => { e.preventDefault(); history.back(); }}
           className="inline-flex items-center rounded-lg border px-3 py-2 text-sm hover:bg-gray-50"
         >
           ← Back
@@ -130,9 +117,7 @@ export default async function TransactionsPage({
             Next →
           </Link>
         ) : (
-          <span className="inline-flex items-center rounded-lg border px-3 py-2 text-sm text-gray-400">
-            Next →
-          </span>
+          <span className="inline-flex items-center rounded-lg border px-3 py-2 text-sm text-gray-400">Next →</span>
         )}
       </div>
     </div>
