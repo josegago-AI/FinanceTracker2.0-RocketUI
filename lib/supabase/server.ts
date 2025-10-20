@@ -35,3 +35,16 @@ export async function getSessionUser() {
   const { data: { user } } = await sb.auth.getUser()
   return user ?? null
 }
+export function createReadOnlyClient() {
+  const cookieStore = cookies();
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll(); },
+        setAll() { /* no-op in RSC render */ },
+      },
+    }
+  );
+}
