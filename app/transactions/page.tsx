@@ -30,11 +30,12 @@ export default async function TransactionsPage({
   const limit = Number(searchParams.limit ?? 50);
   const cursor = (searchParams.cursor as string) ?? null;
 
-  // Auth (SSR) – ensure user is logged in (redirects/throws inside getUserId)
-  await getUserId();
+  // Auth (SSR)
+  const userId = await getUserId(); // Required by your TxListParams
 
-  // Direct DAL call — no fetch (reads rely on RLS via SSR client)
+  // Direct DAL call — include userId to satisfy TxListParams
   const { data, nextCursor } = await listTransactions({
+    userId,
     limit,
     cursor,
     // defaults for v1
