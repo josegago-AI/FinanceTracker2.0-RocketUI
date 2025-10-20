@@ -1,4 +1,4 @@
-import { createReadOnlyClient } from "@/lib/supabase/server-readonly";
+import { createReadOnlyClient } from "@/lib/supabase/server";
 import { TxQueryInput } from "./query";
 
 export type TxListParams = TxQueryInput & { userId: string };
