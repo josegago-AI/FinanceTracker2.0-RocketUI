@@ -22,7 +22,7 @@ export default async function TransactionsPage({
     // Redirect or render nothing if unauthenticated
     return null;
   }
-
+  const params = parseTxQuery(searchParams);
   // ✅ 2. Parse and validate URL filters/sorting
   const dalParams = {
     userId,
