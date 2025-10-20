@@ -1,5 +1,6 @@
 // app/transactions/page.tsx
 import Link from "next/link";
+import BackLink from "./components/BackLink";
 import { listTransactions } from "@/lib/transactions/dal";
 import { getUserId } from "@/lib/auth/getUserId";
 
@@ -29,12 +30,11 @@ export default async function TransactionsPage({
   const limit = Number(searchParams.limit ?? 50);
   const cursor = (searchParams.cursor as string) ?? null;
 
-  // Auth (SSR)
-  const userId = await getUserId();
+  // Auth (SSR) – ensure user is logged in (redirects/throws inside getUserId)
+  await getUserId();
 
-  // Direct DAL call — no fetch
+  // Direct DAL call — no fetch (reads rely on RLS via SSR client)
   const { data, nextCursor } = await listTransactions({
-    userId,
     limit,
     cursor,
     // defaults for v1
@@ -90,16 +90,8 @@ export default async function TransactionsPage({
       </div>
 
       <div className="flex items-center justify-between">
-        <Link
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            history.back();
-          }}
-          className="inline-flex items-center rounded-lg border px-3 py-2 text-sm hover:bg-gray-50"
-        >
-          ← Back
-        </Link>
+        {/* Client-side back button (no function props from Server → Client) */}
+        <BackLink className="inline-flex items-center rounded-lg border px-3 py-2 text-sm hover:bg-gray-50" />
 
         {nextCursor ? (
           <Link
