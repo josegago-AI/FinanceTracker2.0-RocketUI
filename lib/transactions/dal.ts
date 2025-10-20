@@ -19,8 +19,9 @@ export async function listTransactions(p: TxListParams) {
 }
 
 export async function getTotals(p: TxListParams): Promise<Totals> {
-  const base = supabaseAnon().from("transactions").select("amount");
-  const { data, error } = await applyFilters(base, p);
+  const sb = createReadOnlyClient();
+  let q = applyFilters(sb.from("transactions").select("amount"), p);
+  const { data, error } = await q;
   if (error) throw error;
 
   let income = 0, expense = 0;
