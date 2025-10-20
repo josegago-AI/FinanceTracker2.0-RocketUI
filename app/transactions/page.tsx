@@ -1,25 +1,13 @@
 // app/transactions/page.tsx
 import Link from "next/link";
 import BackLink from "./components/BackLink";
+import TransactionView from "@/app/transactions/components/TransactionView";
 import { listTransactions } from "@/lib/transactions/dal";
 import { getUserId } from "@/lib/auth/getUserId";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export const revalidate = 0;
-
-type TxRow = {
-  id: string;
-  date: string;
-  payee: string;
-  amount: number;
-  category_id?: string | null;
-  tags?: string[] | null;
-};
-
-function toMoney(n: number) {
-  return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(n);
-}
 
 export default async function TransactionsPage({
   searchParams,
@@ -31,69 +19,32 @@ export default async function TransactionsPage({
   const cursor = (searchParams.cursor as string) ?? null;
 
   // Auth (SSR)
-  const userId = await getUserId(); // Required by your TxListParams
+  await getUserId();
 
-  // Direct DAL call — include userId to satisfy TxListParams
-  const { data, nextCursor } = await listTransactions({
-    userId,
+  // Server-side data fetch (RLS-aware)
+  const { data, nextCursor, totals } = await listTransactions({
     limit,
     cursor,
-    // defaults for v1
     sort: "date",
     dir: "desc",
   });
 
+  // Map DAL totals to the Rocket UI stats keys expected by TransactionView
+  const stats = {
+    totalIncome: totals?.income ?? 0,
+    totalExpense: Math.abs(totals?.expense ?? 0), // show as positive for the card
+    netSavings: totals?.net ?? 0,
+    txCount: data.length, // current page count; replace with total if you add it later
+  };
+
   return (
-    <div className="p-6 space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Transactions</h1>
-        <div className="text-sm text-gray-500">{data.length} rows</div>
-      </div>
+    <div className="min-h-screen">
+      {/* Full Rocket-like experience lives in the client component below */}
+      <TransactionView stats={stats} txs={data} />
 
-      <div className="overflow-x-auto rounded-xl border">
-        <table className="min-w-full text-sm">
-          <thead className="bg-gray-50 text-left">
-            <tr>
-              <th className="px-4 py-3 font-medium">Date</th>
-              <th className="px-4 py-3 font-medium">Payee</th>
-              <th className="px-4 py-3 font-medium text-right">Amount</th>
-              <th className="px-4 py-3 font-medium">Category</th>
-              <th className="px-4 py-3 font-medium">Tags</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {data.map((tx: TxRow) => (
-              <tr key={tx.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 whitespace-nowrap">
-                  {new Date(tx.date + "T00:00:00").toLocaleDateString()}
-                </td>
-                <td className="px-4 py-3">{tx.payee}</td>
-                <td className="px-4 py-3 text-right font-medium">
-                  <span className={tx.amount < 0 ? "text-red-600" : "text-emerald-600"}>
-                    {toMoney(tx.amount)}
-                  </span>
-                </td>
-                <td className="px-4 py-3">{tx.category_id ?? "—"}</td>
-                <td className="px-4 py-3">
-                  {(tx.tags ?? []).length ? (tx.tags as string[]).join(", ") : "—"}
-                </td>
-              </tr>
-            ))}
-            {data.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-4 py-10 text-center text-gray-500">
-                  No transactions yet.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="flex items-center justify-between">
-        {/* Client-side back button (no function props from Server → Client) */}
+      {/* Keep simple server-side pagination + back, without passing function props */}
+      <div className="mx-auto max-w-7xl px-6 pb-10 flex items-center justify-between">
         <BackLink className="inline-flex items-center rounded-lg border px-3 py-2 text-sm hover:bg-gray-50" />
-
         {nextCursor ? (
           <Link
             href={`/transactions?limit=${limit}&cursor=${encodeURIComponent(nextCursor)}`}
