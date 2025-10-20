@@ -5,6 +5,7 @@ import { getUserId } from "@/lib/auth/getUserId";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
+export const revalidate = 0;
 
 type TxRow = {
   id: string;
