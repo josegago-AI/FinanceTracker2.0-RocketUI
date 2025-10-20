@@ -4,7 +4,7 @@ import BackLink from "./components/BackLink";
 import TransactionView from "@/app/transactions/components/TransactionView";
 
 import { listTransactions } from "@/lib/transactions/dal";
-import { parseTxQuery } from "@/lib/transactions/query";
+import { parseTxQuery } from "@/lib/transactions/urlQuery";
 import { getUserId } from "@/lib/auth/getUserId";
 
 export const dynamic = "force-dynamic";
