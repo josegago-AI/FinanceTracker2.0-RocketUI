@@ -18,31 +18,29 @@ export default async function TransactionsPage({
   const limit = Number(searchParams.limit ?? 50);
   const cursor = (searchParams.cursor as string) ?? null;
 
-  // Auth (SSR)
-  await getUserId();
+  // Auth (SSR) – and use it in DAL call
+  const userId = await getUserId();
 
   // Server-side data fetch (RLS-aware)
   const { data, nextCursor, totals } = await listTransactions({
+    userId,
     limit,
     cursor,
     sort: "date",
     dir: "desc",
   });
 
-  // Map DAL totals to the Rocket UI stats keys expected by TransactionView
   const stats = {
     totalIncome: totals?.income ?? 0,
-    totalExpense: Math.abs(totals?.expense ?? 0), // show as positive for the card
+    totalExpense: Math.abs(totals?.expense ?? 0),
     netSavings: totals?.net ?? 0,
-    txCount: data.length, // current page count; replace with total if you add it later
+    txCount: data.length,
   };
 
   return (
     <div className="min-h-screen">
-      {/* Full Rocket-like experience lives in the client component below */}
       <TransactionView stats={stats} txs={data} />
 
-      {/* Keep simple server-side pagination + back, without passing function props */}
       <div className="mx-auto max-w-7xl px-6 pb-10 flex items-center justify-between">
         <BackLink className="inline-flex items-center rounded-lg border px-3 py-2 text-sm hover:bg-gray-50" />
         {nextCursor ? (
@@ -61,3 +59,4 @@ export default async function TransactionsPage({
     </div>
   );
 }
+
