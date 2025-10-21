@@ -7,6 +7,8 @@ import { Plus, Edit, Trash2 } from 'lucide-react'
 import FinancialSummaryCard from '@/app/rocket-ui/components/ui/FinancialSummaryCard'
 import TransactionFilters from '@/app/transactions/components/TransactionFilters'
 import { AddTransactionModal } from '@/app/transactions/components/AddTransactionModal'
+import SavedViewsMenu from '@/app/transactions/components/SavedViewsMenu'
+
 // If you currently use a server action here, you can keep it.
 // However, calling server actions directly from client handlers is fragile.
 // Prefer an /api route with fetch if you have it available.
@@ -167,9 +169,13 @@ export default function TransactionView({
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-6 py-8 pt-24">
-        <h1 className="text-2xl font-bold mb-6">Transactions</h1>
-
+    <div className="max-w-7xl mx-auto px-6 py-8 pt-24">
+      {/* Header area with title + Saved Views menu */}
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Transactions</h1>
+        <SavedViewsMenu initialQuery={initialQuery} />
+      </div>
+      
         {/* Rocket Stats Strip */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <FinancialSummaryCard title="Total Income"  amount={stats.totalIncome}  change={0} changeType="neutral" icon="TrendingUp"  iconColor="bg-green-500" />
