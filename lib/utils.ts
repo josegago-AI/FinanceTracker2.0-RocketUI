@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
 /**
  * Format a number as a currency string.
  * Usage:
@@ -25,4 +26,28 @@ export function formatCurrency(
     maximumFractionDigits: 2,
     ...rest,
   }).format(value ?? 0)
+}
+
+/**
+ * Format a date (string, number, or Date) to a short human-friendly string.
+ * Example:
+ *   formatDate('2025-10-21') → "Oct 21, 2025"
+ */
+export function formatDate(
+  date: string | number | Date | null | undefined,
+  locale: string = "en-US",
+  options: Intl.DateTimeFormatOptions = {}
+): string {
+  if (!date) return "";
+  try {
+    const d = new Date(date);
+    return d.toLocaleDateString(locale, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      ...options,
+    });
+  } catch {
+    return "";
+  }
 }
