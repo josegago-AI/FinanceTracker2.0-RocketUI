@@ -8,6 +8,7 @@ import FinancialSummaryCard from '@/app/rocket-ui/components/ui/FinancialSummary
 import TransactionFilters from '@/app/transactions/components/TransactionFilters'
 import { AddTransactionModal } from '@/app/transactions/components/AddTransactionModal'
 import SavedViewsMenu from '@/app/transactions/components/SavedViewsMenu'
+import { Button } from '@/components/ui/button'
 
 // If you currently use a server action here, you can keep it.
 // However, calling server actions directly from client handlers is fragile.
