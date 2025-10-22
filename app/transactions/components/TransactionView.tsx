@@ -276,40 +276,56 @@ console.error(e);
 </thead>
 
             <tbody className="divide-y divide-border">
-              {filtered.map((tx: any) => (
-                <tr key={tx.id}>
-                  <td className="px-4 py-3 text-sm">{format(new Date(tx.date), 'MMM d, yyyy')}</td>
-                  <td className="px-4 py-3 text-sm font-medium">{tx.payee}</td>
-                  <td className="px-4 py-3 text-sm text-muted-foreground">{tx.category}</td>
-                  <td className={`px-4 py-3 text-sm font-semibold text-right ${tx.amount < 0 ? 'text-red-500' : 'text-green-500'}`}>
-                    {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Math.abs(tx.amount))}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex justify-end gap-2">
-                      <button
-                        onClick={() => handleEdit(tx)}
-                        className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
-                        title="Edit transaction"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(tx)}
-                        className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
-                        title="Delete transaction"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-sm text-muted-foreground">No transactions found</td>
-                </tr>
-              )}
-            </tbody>
+  {filtered.map((tx: any) => (
+    <tr key={tx.id}>
+      {/* Row checkbox */}
+      <td className="px-4 py-3">
+        <input
+          type="checkbox"
+          checked={selectedIds.includes(String(tx.id))}
+          onChange={(e) => toggleOne(String(tx.id), e.target.checked)}
+          aria-label={`Select transaction ${tx.id}`}
+        />
+      </td>
+
+      {/* Existing cells */}
+      <td className="px-4 py-3 text-sm">{format(new Date(tx.date), 'MMM d, yyyy')}</td>
+      <td className="px-4 py-3 text-sm font-medium">{tx.payee}</td>
+      <td className="px-4 py-3 text-sm text-muted-foreground">{tx.category}</td>
+      <td className={`px-4 py-3 text-sm font-semibold text-right ${tx.amount < 0 ? 'text-red-500' : 'text-green-500'}`}>
+        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Math.abs(tx.amount))}
+      </td>
+      <td className="px-4 py-3 text-right">
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={() => handleEdit(tx)}
+            className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+            title="Edit transaction"
+          >
+            <Edit className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => handleDelete(tx)}
+            className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
+            title="Delete transaction"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
+      </td>
+    </tr>
+  ))}
+
+  {filtered.length === 0 && (
+    <tr>
+      {/* 👇 Now 6 columns (includes the checkbox column) */}
+      <td colSpan={6} className="px-4 py-8 text-center text-sm text-muted-foreground">
+        No transactions found
+      </td>
+    </tr>
+  )}
+</tbody>
+
           </table>
         </div>
 
