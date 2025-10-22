@@ -201,7 +201,7 @@ console.error(e);
 
   return (
     <>
-    <div className="max-w-7xl mx-auto px-6 py-8 pt-24">
+    <div className="max-w-7xl mx-auto px-6 py-8">
       {/* Header area with title + Saved Views menu */}
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Transactions</h1>
