@@ -158,6 +158,37 @@ export default function TransactionView({
     return data
   }, [txs, filters])
 
+  // --- multi‑select & Bulk Actions -----------------------------------------
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+const allIds = useMemo(() => filtered.map((t: any) => String(t.id)), [filtered]);
+const allSelectedOnPage = selectedIds.length > 0 && selectedIds.length === allIds.length;
+const someSelectedOnPage = selectedIds.length > 0 && selectedIds.length < allIds.length;
+
+const toggleAllOnPage = (checked: boolean) => {
+setSelectedIds(checked ? allIds : []);
+};
+
+const toggleOne = (id: string, checked: boolean) => {
+setSelectedIds(prev => checked ? Array.from(new Set([...prev, id])) : prev.filter(x => x !== id));
+};
+
+async function runBulk(action: 'delete' | 'mark_cleared' | 'mark_uncleared') {
+if (selectedIds.length === 0) return;
+if (action === 'delete' && !confirm(`Delete ${selectedIds.length} transaction(s)?`)) return;
+try {
+await fetch('/api/transactions/bulk', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ action, ids: selectedIds }),
+});
+setSelectedIds([]);
+router.refresh();
+} catch (e) {
+alert('Bulk action failed');
+console.error(e);
+}
+}
   // --- Build Next link (pagination) -----------------------------------------
   const nextHref = (() => {
     if (!nextCursor) return null
@@ -188,37 +219,62 @@ export default function TransactionView({
         {/* Filters (now wired to URL) */}
         <TransactionFilters onFiltersChange={onFiltersChange} />
 
+      {/* Bulk toolbar */}
+      {selectedIds.length > 0 && (
+      <div className="mb-3 flex items-center gap-2">
+      <span className="text-sm text-muted-foreground">{selectedIds.length} selected</span>
+      <Button variant="outline" onClick={() => runBulk('mark_cleared')}>Mark cleared</Button>
+      <Button variant="outline" onClick={() => runBulk('mark_uncleared')}>Mark uncleared</Button>
+      <Button variant="destructive" onClick={() => runBulk('delete')}>Delete</Button>
+      </div>
+      )}
+      
         {/* Table */}
         <div className="bg-card rounded-xl shadow-elevation-1 overflow-hidden">
           <table className="min-w-full divide-y divide-border">
             <thead className="bg-muted/30">
-              <tr>
-                <SortableTh
-                  label="Date"
-                  field="date"
-                  onClick={() => setParams({ sort: 'date', dir: nextSortDir('date') })}
-                  currentSort={(sp.get('sort') as QueryLike['sort']) ?? (initialQuery?.sort ?? 'date')}
-                  currentDir={(sp.get('dir') as QueryLike['dir']) ?? (initialQuery?.dir ?? 'desc')}
-                />
-                <SortableTh
-                  label="Payee"
-                  field="payee"
-                  onClick={() => setParams({ sort: 'payee', dir: nextSortDir('payee') })}
-                  currentSort={(sp.get('sort') as QueryLike['sort']) ?? (initialQuery?.sort ?? 'date')}
-                  currentDir={(sp.get('dir') as QueryLike['dir']) ?? (initialQuery?.dir ?? 'desc')}
-                />
-                <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Category</th>
-                <SortableTh
-                  label="Amount"
-                  field="amount"
-                  align="right"
-                  onClick={() => setParams({ sort: 'amount', dir: nextSortDir('amount') })}
-                  currentSort={(sp.get('sort') as QueryLike['sort']) ?? (initialQuery?.sort ?? 'date')}
-                  currentDir={(sp.get('dir') as QueryLike['dir']) ?? (initialQuery?.dir ?? 'desc')}
-                />
-                <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
-              </tr>
-            </thead>
+  <tr>
+    {/* Master checkbox column */}
+    <th className="px-4 py-3">
+      <input
+        type="checkbox"
+        checked={allSelectedOnPage}
+        ref={(el) => {
+          if (el) el.indeterminate = someSelectedOnPage
+        }}
+        onChange={(e) => toggleAllOnPage(e.target.checked)}
+        aria-label="Select all on this page"
+      />
+    </th>
+
+    {/* Existing sortable headers */}
+    <SortableTh
+      label="Date"
+      field="date"
+      onClick={() => setParams({ sort: 'date', dir: nextSortDir('date') })}
+      currentSort={(sp.get('sort') as QueryLike['sort']) ?? (initialQuery?.sort ?? 'date')}
+      currentDir={(sp.get('dir') as QueryLike['dir']) ?? (initialQuery?.dir ?? 'desc')}
+    />
+    <SortableTh
+      label="Payee"
+      field="payee"
+      onClick={() => setParams({ sort: 'payee', dir: nextSortDir('payee') })}
+      currentSort={(sp.get('sort') as QueryLike['sort']) ?? (initialQuery?.sort ?? 'date')}
+      currentDir={(sp.get('dir') as QueryLike['dir']) ?? (initialQuery?.dir ?? 'desc')}
+    />
+    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Category</th>
+    <SortableTh
+      label="Amount"
+      field="amount"
+      align="right"
+      onClick={() => setParams({ sort: 'amount', dir: nextSortDir('amount') })}
+      currentSort={(sp.get('sort') as QueryLike['sort']) ?? (initialQuery?.sort ?? 'date')}
+      currentDir={(sp.get('dir') as QueryLike['dir']) ?? (initialQuery?.dir ?? 'desc')}
+    />
+    <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
+  </tr>
+</thead>
+
             <tbody className="divide-y divide-border">
               {filtered.map((tx: any) => (
                 <tr key={tx.id}>
