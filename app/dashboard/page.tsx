@@ -45,7 +45,7 @@ export default async function DashboardPage() {
   const txs   = await getRecentTransactions(sb)
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
+   <main className="max-w-7xl mx-auto px-6 py-8">
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <FinancialSummaryCard title="Total Balance" amount={kpis.totalBalance} change={0} changeType="neutral" icon="Wallet" iconColor="bg-blue-500" />
@@ -57,6 +57,6 @@ export default async function DashboardPage() {
         <div className="lg:col-span-2"><SpendingChart /></div>
         <RecentTransactions transactions={txs} />
       </div>
-    </div>
+    </main>
   )
 }
