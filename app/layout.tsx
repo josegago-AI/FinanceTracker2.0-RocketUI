@@ -4,7 +4,7 @@ import './globals.css'
 
 import { RocketThemeProvider } from '@/lib/theme-provider'
 import SiteHeaderGate from '@/app/components/layout/SiteHeaderGate'
-import { AnimatePresence, motion } from 'framer-motion'
+import { PageTransition } from '@/app/components/layout/PageTransition'
 import PathnameWrapper from '@/app/components/layout/PathnameWrapper'
 
 
@@ -29,20 +29,11 @@ export default function RootLayout({
           {/* ✅ Global top navigation bar */}
           <SiteHeaderGate />
 
-          {/* ✅ Animated page transitions */}
-          <AnimatePresence mode="wait">
-            <motion.main
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
-              className="pt-16 min-h-screen bg-background"
+          
             >
               <PathnameWrapper>
               {children}
               </PathnameWrapper>
-            </motion.main>
-          </AnimatePresence>
         </RocketThemeProvider>
       </body>
     </html>
