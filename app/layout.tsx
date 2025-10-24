@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 
+import { RocketThemeProvider } from '@/lib/theme-provider'
 import SiteHeaderGate from '@/app/components/layout/SiteHeaderGate'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -16,18 +17,19 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  return (
+ return (
     <html lang="en">
-      <body className={inter.className}>
-        
-        {/* 🎯 Header gated to not show on /auth/* */}
-        <SiteHeaderGate />
-        
-        
-        {/* 🎯 Main content with spacing for fixed header when visible */}
-        <main className="pt-16 min-h-screen bg-background">
-          {children}
-        </main>
+      <body>
+        <RocketThemeProvider>
+         
+          {/* Global Header */}
+          <SiteHeaderGate />
+
+          {/* Main content */}
+          <main className="pt-16 min-h-screen bg-background">
+            {children}
+          </main>
+        </RocketThemeProvider>
       </body>
     </html>
   )
