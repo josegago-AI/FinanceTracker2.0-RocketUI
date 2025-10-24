@@ -30,7 +30,7 @@ export default function RootLayout({
           <SiteHeaderGate />
 
           
-            >
+            
               <PathnameWrapper>
               {children}
               </PathnameWrapper>
