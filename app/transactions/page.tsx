@@ -7,6 +7,10 @@ import { listTransactions } from "@/lib/transactions/dal";
 import { parseTxQuery } from "@/lib/transactions/urlQuery";
 import { getUserId } from "@/lib/auth/getUserId";
 
+import { GlobalLoading } from '@/components/ui/global-loading';
+import { GlobalEmpty } from '@/components/ui/global-empty';
+
+
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export const revalidate = 0;
@@ -37,12 +41,6 @@ export default async function TransactionsPage({
     cursor: params.cursor ?? null,
   };
 
-// ✅ 2.9 Show global loading state while data is fetching
-const { GlobalLoading } = await import('@/components/ui/global-loading')
-
-// If you later refactor this to client-side fetching, wrap this inside a Suspense or useTransition.
-// For SSR (like now), this is static but good for consistency if reused client-side.
-
   
   // ✅ 3. Fetch filtered, sorted data from DAL (with RLS)
   const { data, nextCursor, totals } = await listTransactions({
@@ -56,7 +54,7 @@ if (!data) {
   
   // ✅ 3.1 Global Empty component 
 if (!data || data.length === 0) {
-  const { GlobalEmpty } = await import('@/components/ui/global-empty')
+  
   return (
     <div className="min-h-screen flex items-center justify-center">
       <GlobalEmpty
