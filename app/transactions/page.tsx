@@ -52,6 +52,10 @@ if (!data) {
     userId,
   });
 
+if (!data) {
+  return <GlobalLoading />
+}
+  
   // ✅ 3.1 Global Empty component 
 if (!data || data.length === 0) {
   const { GlobalEmpty } = await import('@/components/ui/global-empty')
