@@ -1,7 +1,9 @@
+"use client"
+
 import { Inbox } from 'lucide-react'
 import { motion } from 'framer-motion'
 
-export default function GlobalEmpty({
+export  function GlobalEmpty({
   title = 'No data found',
   description = 'Try adding new items or adjusting filters.',
 }: {
