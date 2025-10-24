@@ -22,7 +22,7 @@ export function Card({ className, children, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "rounded-lg border border-border bg-card text-card-foreground shadow-elevation-1",
+        "rounded-lg border border-border bg-card text-card-foreground shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow duration-300 p-6 sm:p-8",
         className
       )}
       {...props}
@@ -34,7 +34,7 @@ export function Card({ className, children, ...props }: CardProps) {
 
 export function CardHeader({ className, ...props }: CardHeaderProps) {
   return (
-    <div className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
+    <div className={cn("flex flex-col space-y-1.5", className)} {...props} />
   )
 }
 
@@ -45,5 +45,5 @@ export function CardTitle({ className, ...props }: CardTitleProps) {
 }
 
 export function CardContent({ className, ...props }: CardContentProps) {
-  return <div className={cn("p-6 pt-0", className)} {...props} />
+  return <div className={cn("pt-0", className)} {...props} />
 }
