@@ -28,9 +28,6 @@ export default function RootLayout({
         <RocketThemeProvider>
           {/* ✅ Global top navigation bar */}
           <SiteHeaderGate />
-
-          
-            
               <PathnameWrapper>
               {children}
               </PathnameWrapper>
