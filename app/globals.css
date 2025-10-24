@@ -143,3 +143,16 @@
     --border: 217.2 32.6% 17.5%;
   }
 }
+/* === Rocket Theme Variables === */
+.theme-rocket {
+  --color-bg-card: hsl(0 0% 100%);
+  --color-border: hsl(220 13% 91%);
+  --color-ring: hsl(221 83% 53%);
+  --radius-md: 0.5rem;
+}
+
+.dark .theme-rocket {
+  --color-bg-card: hsl(222 47% 11%);
+  --color-border: hsl(216 34% 17%);
+  --color-ring: hsl(217 91% 60%);
+}
