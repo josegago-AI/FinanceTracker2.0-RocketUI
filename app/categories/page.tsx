@@ -11,15 +11,20 @@ export default async function CategoriesPage() {
   const categories = await getCategories()
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Categories</h1>
+    <main className="max-w-7xl mx-auto px-6 py-8">
+      <header className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Categories
+        </h1>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
           Organize your transactions with custom categories.
         </p>
-      </div>
+      </header>
 
-      <CategoriesClient initialCategories={categories} />
-    </div>
+      {/* Rocket-style main content */}
+      <section>
+        <CategoriesClient initialCategories={categories} />
+      </section>
+    </main>
   )
 }
