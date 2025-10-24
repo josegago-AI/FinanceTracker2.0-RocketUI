@@ -86,10 +86,10 @@ export default function RocketHeader() {
             <Bell className="h-4 w-4 mr-2" />
             Notifications
           </Button>
-          <Button variant="ghost" size="sm" className="hover:bg-muted">
-            <Settings className="h-4 w-4 mr-2" />
-            Settings
-          </Button>
+          <Link href="/settings" className="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+  <Settings className="h-4 w-4 mr-2" />
+  Settings
+</Link>
           <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center hover:bg-muted/80 cursor-pointer">
             <User className="h-4 w-4 text-muted-foreground" />
           </div>
@@ -133,10 +133,15 @@ export default function RocketHeader() {
                 <Bell className="h-4 w-4 mr-2" />
                 Notifications
               </Button>
-              <Button variant="ghost" size="sm" className="w-full justify-start">
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
-              </Button>
+              <Link
+  href="/settings"
+  onClick={() => setIsMobileMenuOpen(false)}
+  className="flex items-center w-full justify-start rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+>
+  <Settings className="h-4 w-4 mr-2" />
+  Settings
+</Link>
+
             </div>
           </nav>
         </div>
