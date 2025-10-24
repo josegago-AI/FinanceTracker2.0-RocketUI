@@ -1,4 +1,6 @@
 import { Inbox } from 'lucide-react'
+import { motion } from 'framer-motion'
+
 
 export default function GlobalEmpty({
   title = 'No data found',
