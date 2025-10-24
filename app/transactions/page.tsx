@@ -65,7 +65,7 @@ if (!data) {
 
   // ✅ 5. Render Rocket-style view
   return (
-    <div className="min-h-screen">
+    <main className="max-w-7xl mx-auto px-6 py-8">
       <TransactionView
         initialQuery={params}     // gives client UI the current filters/sort
         txs={data}                // main transaction list
@@ -73,7 +73,7 @@ if (!data) {
         nextCursor={nextCursor}   // pagination
       />
 
-      <div className="mx-auto max-w-7xl px-6 pb-10 flex items-center justify-between">
+      <div className="pb-10 flex items-center justify-between">
         <BackLink className="inline-flex items-center rounded-lg border px-3 py-2 text-sm hover:bg-gray-50" />
 
         {nextCursor ? (
@@ -96,6 +96,6 @@ if (!data) {
           </span>
         )}
       </div>
-    </div>
+    </main>
   );
 }
