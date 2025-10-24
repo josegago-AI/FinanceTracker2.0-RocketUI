@@ -8,7 +8,7 @@ import { parseTxQuery } from "@/lib/transactions/urlQuery";
 import { getUserId } from "@/lib/auth/getUserId";
 
 import { GlobalLoading } from '@/components/ui/global-loading';
-import { GlobalEmpty } from '@/components/ui/global-empty';
+
 
 
 export const dynamic = "force-dynamic";
@@ -52,24 +52,7 @@ if (!data) {
   return <GlobalLoading />
 }
   
-  // ✅ Always render the main layout and AddTransactionModal, even if empty
-return (
-  <div className="max-w-7xl mx-auto px-6 py-8">
-    {data && data.length > 0 ? (
-      <TransactionView txs={data} />
-    ) : (
-      <div className="mt-8">
-        <GlobalEmpty
-          title="No transactions yet"
-          description="Start by adding your first transaction below."
-        />
-      </div>
-    )}
-    
-    {/* Keep the AddTransactionModal always accessible */}
-    <AddTransactionModal />
-  </div>
-)
+  
 
   
   // ✅ 4. Basic stats for top summary cards
