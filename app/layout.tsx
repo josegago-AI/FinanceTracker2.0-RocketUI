@@ -20,17 +20,18 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  
-
   return (
     <html lang="en">
       <body className={inter.className}>
         <RocketThemeProvider>
           {/* ✅ Global top navigation bar */}
+          
           <SiteHeaderGate />
+          <main className="pt-20 min-h-screen bg-background">
               <PathnameWrapper>
               {children}
               </PathnameWrapper>
+            </main>
         </RocketThemeProvider>
       </body>
     </html>
