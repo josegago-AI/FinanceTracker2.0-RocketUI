@@ -5,7 +5,8 @@ import './globals.css'
 import { RocketThemeProvider } from '@/lib/theme-provider'
 import SiteHeaderGate from '@/app/components/layout/SiteHeaderGate'
 import { AnimatePresence, motion } from 'framer-motion'
-import { usePathname } from 'next/navigation'
+import PathnameWrapper from '@/app/components/layout/PathnameWrapper'
+
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -38,7 +39,9 @@ export default function RootLayout({
               transition={{ duration: 0.25 }}
               className="pt-16 min-h-screen bg-background"
             >
+              <PathnameWrapper>
               {children}
+              </PathnameWrapper>
             </motion.main>
           </AnimatePresence>
         </RocketThemeProvider>
