@@ -56,7 +56,7 @@ if (!data) {
 return (
   <div className="max-w-7xl mx-auto px-6 py-8">
     {data && data.length > 0 ? (
-      <TransactionTable data={data} />
+      <TransactionView data={data} />
     ) : (
       <div className="mt-8">
         <GlobalEmpty
