@@ -1,4 +1,6 @@
 import { Loader2 } from 'lucide-react'
+import { motion } from 'framer-motion'
+
 
 export default function GlobalLoading() {
   return (
