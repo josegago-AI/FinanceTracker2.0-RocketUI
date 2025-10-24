@@ -42,9 +42,7 @@ const { GlobalLoading } = await import('@/components/ui/global-loading')
 
 // If you later refactor this to client-side fetching, wrap this inside a Suspense or useTransition.
 // For SSR (like now), this is static but good for consistency if reused client-side.
-if (!data) {
-  return <GlobalLoading />
-}
+
   
   // ✅ 3. Fetch filtered, sorted data from DAL (with RLS)
   const { data, nextCursor, totals } = await listTransactions({
