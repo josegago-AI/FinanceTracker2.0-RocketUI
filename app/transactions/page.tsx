@@ -52,18 +52,25 @@ if (!data) {
   return <GlobalLoading />
 }
   
-  // ✅ 3.1 Global Empty component 
-if (!data || data.length === 0) {
-  
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <GlobalEmpty
-        title="No transactions found"
-        description="Try adding a new transaction or adjusting your filters."
-      />
-    </div>
-  )
-}
+  // ✅ Always render the main layout and AddTransactionModal, even if empty
+return (
+  <div className="max-w-7xl mx-auto px-6 py-8">
+    {data && data.length > 0 ? (
+      <TransactionTable data={data} />
+    ) : (
+      <div className="mt-8">
+        <GlobalEmpty
+          title="No transactions yet"
+          description="Start by adding your first transaction below."
+        />
+      </div>
+    )}
+    
+    {/* Keep the AddTransactionModal always accessible */}
+    <AddTransactionModal />
+  </div>
+)
+
   
   // ✅ 4. Basic stats for top summary cards
   const stats = {
