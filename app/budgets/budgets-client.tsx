@@ -29,16 +29,23 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
 
   // ✅ Add a new budget
   const handleAdd = async (data: Omit<Budget, 'id' | 'spent'>) => {
-    startTransition(async () => {
-      try {
-        const newBudget = await createBudget(data)
-        setBudgets((prev) => [newBudget, ...prev])
-        setIsModalOpen(false)
-      } catch (err) {
-        console.error('Error creating budget:', err)
+  startTransition(async () => {
+    try {
+      const payload = {
+        category_id: data.category,   // match Supabase schema
+        amount: data.limit,           // match Supabase schema
+        month: data.month,
+        year: Number(data.year),
       }
-    })
-  }
+
+      const newBudget = await createBudget(payload)
+      setBudgets(prev => [newBudget, ...prev])
+      setIsModalOpen(false)
+    } catch (err) {
+      console.error('Error creating budget:', err)
+    }
+  })
+}
 
   // ✅ Edit an existing budget
   const handleEdit = async (id, data) => {
