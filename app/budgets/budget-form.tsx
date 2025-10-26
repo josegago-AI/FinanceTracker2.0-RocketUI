@@ -43,7 +43,9 @@ export function BudgetForm({ initialData, onSubmit, onCancel, loading }: BudgetF
     fetchCategories()
   }, [supabase])
 
-  const handleChange = (key: string, value: any) => setForm((prev) => ({ ...prev, [key]: value }))
+  const handleChange = (key: string, value: any) =>
+  setForm((prev: typeof form) => ({ ...prev, [key]: value }))
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
