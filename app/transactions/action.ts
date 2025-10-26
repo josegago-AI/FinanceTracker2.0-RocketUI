@@ -1,6 +1,5 @@
 'use server'
 import { createClient } from '@/lib/supabase/server'
-import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 
 export async function addTransaction(values: {
@@ -60,7 +59,7 @@ export async function updateTransaction(id: string, values: Partial<{
 }
 
 export async function deleteTransaction(id: string) {
-  const sb = createClient(cookies())
+  const sb = createClient()
   const { data: user } = await sb.auth.getUser()
   if (!user.user) throw new Error('Unauthorized')
 

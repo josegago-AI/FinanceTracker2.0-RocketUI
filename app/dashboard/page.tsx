@@ -1,7 +1,6 @@
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
 
-import { cookies } from 'next/headers'
 import FinancialSummaryCard from '@/app/rocket-ui/components/ui/FinancialSummaryCard'
 import SpendingChart from '@/app/rocket-ui/components/ui/SpendingChart'
 import RecentTransactions from '@/app/rocket-ui/components/ui/RecentTransactions'
@@ -39,7 +38,6 @@ async function getRecentTransactions(sb: ReturnType<typeof createClient>) {
 
 /* ----------  Page  ---------- */
 export default async function DashboardPage() {
-  const cookieStore = cookies()
   const sb = createClient()
   const kpis  = await getKPIs(sb)
   const txs   = await getRecentTransactions(sb)

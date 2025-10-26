@@ -1,7 +1,6 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 
 export async function addTransaction(values: {
@@ -11,7 +10,6 @@ export async function addTransaction(values: {
   date: string
   notes?: string
 }) {
-  const cookieStore = cookies()
   const sb = createClient()
 
   const { data: user } = await sb.auth.getUser()
