@@ -40,7 +40,7 @@ async function getRecentTransactions(sb: ReturnType<typeof createClient>) {
 /* ----------  Page  ---------- */
 export default async function DashboardPage() {
   const cookieStore = cookies()
-  const sb = createClient(cookieStore)
+  const sb = createClient()
   const kpis  = await getKPIs(sb)
   const txs   = await getRecentTransactions(sb)
 
