@@ -1,40 +1,75 @@
-// app/budgets/actions.ts
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+import { getUserId } from '@/lib/auth/getUserId'
 
 export async function getBudgets() {
   const supabase = createClient()
+  const userId = await getUserId()
+  if (!userId) return []
+
   const { data, error } = await supabase
     .from('budgets')
-    .select('*')
+    .select('id, category_id, amount, month, year, start_date, end_date, created_at')
+    .eq('user_id', userId)
     .order('created_at', { ascending: false })
 
-  if (error) throw new Error(error.message)
-  return data ?? []
+  if (error) {
+    console.error('Error fetching budgets:', error)
+    return []
+  }
+
+  return data
 }
 
-export async function insertBudget(formData: FormData) {
+export async function createBudget(budget: {
+  category_id: string
+  amount: number
+  month: string
+  year: number
+}) {
   const supabase = createClient()
-  const name = formData.get('name') as string
-  const category = formData.get('category') as string
-  const limit = Number(formData.get('limit'))
-  const month = formData.get('month') as string
-  const year = Number(formData.get('year'))
+  const userId = await getUserId()
+  if (!userId) throw new Error('Unauthorized')
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('budgets')
-    .insert([{ name, category, limit, month, year }])
+    .insert([{ ...budget, user_id: userId }])
+    .select()
+    .single()
 
-  if (error) throw new Error(error.message)
+  if (error) throw error
+  return data
+}
 
-  revalidatePath('/budgets')
+export async function updateBudget(id: string, updates: Partial<{ category_id: string; amount: number; month: string; year: number }>) {
+  const supabase = createClient()
+  const userId = await getUserId()
+  if (!userId) throw new Error('Unauthorized')
+
+  const { data, error } = await supabase
+    .from('budgets')
+    .update(updates)
+    .eq('id', id)
+    .eq('user_id', userId)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data
 }
 
 export async function deleteBudget(id: string) {
   const supabase = createClient()
-  const { error } = await supabase.from('budgets').delete().eq('id', id)
-  if (error) throw new Error(error.message)
-  revalidatePath('/budgets')
+  const userId = await getUserId()
+  if (!userId) throw new Error('Unauthorized')
+
+  const { error } = await supabase
+    .from('budgets')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', userId)
+
+  if (error) throw error
+  return true
 }
