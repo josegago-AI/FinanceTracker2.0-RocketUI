@@ -21,7 +21,7 @@ interface BudgetsClientProps {
   initialBudgets: Budget[]
 }
 
-export function BudgetsClient({ initialBudgets }) {
+export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
   const [budgets, setBudgets] = useState(initialBudgets)
   const [editing, setEditing] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
