@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 import { X } from 'lucide-react'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 interface BudgetFormProps {
   initialData?: any
@@ -17,6 +18,8 @@ interface BudgetFormProps {
 }
 
 export function BudgetForm({ initialData, onSubmit, onCancel, loading }: BudgetFormProps) {
+  const supabase = createClientComponentClient()
+  const [categories, setCategories] = useState<any[]>([])
   const [form, setForm] = useState(
     initialData || {
       name: '',
@@ -26,6 +29,19 @@ export function BudgetForm({ initialData, onSubmit, onCancel, loading }: BudgetF
       year: new Date().getFullYear(),
     }
   )
+
+  // ✅ Fetch categories from Supabase
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('id, name, type')
+        .order('name', { ascending: true })
+
+      if (!error && data) setCategories(data)
+    }
+    fetchCategories()
+  }, [supabase])
 
   const handleChange = (key: string, value: any) => setForm((prev) => ({ ...prev, [key]: value }))
 
@@ -68,14 +84,24 @@ export function BudgetForm({ initialData, onSubmit, onCancel, loading }: BudgetF
               />
             </div>
 
+            {/* ✅ Category Dropdown */}
             <div>
-              <Label>Category ID</Label>
-              <Input
+              <Label>Category</Label>
+              <Select
                 value={form.category_id}
-                onChange={(e) => handleChange('category_id', e.target.value)}
-                placeholder="Category UUID"
-                required
-              />
+                onValueChange={(v) => handleChange('category_id', v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.name} ({cat.type})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
