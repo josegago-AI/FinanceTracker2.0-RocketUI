@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 import { X } from 'lucide-react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 
 interface BudgetFormProps {
   initialData?: any
@@ -18,7 +18,10 @@ interface BudgetFormProps {
 }
 
 export function BudgetForm({ initialData, onSubmit, onCancel, loading }: BudgetFormProps) {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
   const [categories, setCategories] = useState<any[]>([])
   const [form, setForm] = useState(
     initialData || {
