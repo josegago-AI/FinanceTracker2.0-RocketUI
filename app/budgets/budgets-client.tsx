@@ -7,6 +7,20 @@ import { Plus, Edit, Trash2 } from 'lucide-react'
 import { BudgetForm } from './budget-form'
 import { createBudget, updateBudget, deleteBudget } from './actions'
 
+interface Budget {
+  id: string
+  name: string
+  category: string
+  limit: number
+  spent: number
+  month: string
+  year: string
+}
+
+interface BudgetsClientProps {
+  initialBudgets: Budget[]
+}
+
 export function BudgetsClient({ initialBudgets }) {
   const [budgets, setBudgets] = useState(initialBudgets)
   const [editing, setEditing] = useState(null)
