@@ -12,7 +12,7 @@ export async function addTransaction(values: {
   notes?: string
 }) {
   const cookieStore = cookies()
-  const sb = createClient(cookieStore)
+  const sb = createClient()
 
   const { data: user } = await sb.auth.getUser()
   if (!user.user) throw new Error('Unauthorized')
