@@ -1,6 +1,7 @@
 import { getBudgets } from './actions'
 import { BudgetsClient } from './budgets-client'
 
+export const dynamic = 'force-dynamic'
 export const metadata = {
   title: 'Budgets',
 }
