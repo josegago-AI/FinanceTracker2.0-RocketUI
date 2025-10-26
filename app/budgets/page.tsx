@@ -6,7 +6,18 @@ export const metadata = {
 }
 
 export default async function BudgetsPage() {
-  const budgets = await getBudgets()
+  const rawBudgets = await getBudgets()
+
+  // 🧩 Map Supabase rows to match the Budget interface
+  const budgets = (rawBudgets || []).map((b: any) => ({
+    id: b.id,
+    name: b.category?.name || 'Unnamed', // optional relation
+    category: b.category_id || 'Uncategorized',
+    limit: b.amount || 0,
+    spent: 0, // placeholder (could later be calculated)
+    month: b.month || '',
+    year: b.year?.toString() || '',
+  }))
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
@@ -16,8 +27,7 @@ export default async function BudgetsPage() {
           Track and manage your monthly spending limits.
         </p>
       </div>
-
-      <BudgetsClient initialBudgets={budgets || []} />
+      <BudgetsClient initialBudgets={budgets} />
     </div>
   )
 }
