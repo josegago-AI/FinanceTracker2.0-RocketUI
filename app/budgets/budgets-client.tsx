@@ -69,7 +69,7 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
   }
 
   // ✅ Delete a budget
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('Delete this budget?')) return
     startTransition(async () => {
       try {
