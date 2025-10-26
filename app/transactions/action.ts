@@ -46,7 +46,7 @@ export async function updateTransaction(id: string, values: Partial<{
   date: string
   notes: string | null
 }>) {
-  const sb = createClient(cookies())
+  const sb = createClient()
   const { data: user } = await sb.auth.getUser()
   if (!user.user) throw new Error('Unauthorized')
 
