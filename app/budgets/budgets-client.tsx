@@ -51,7 +51,14 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
   const handleEdit = async (id: string, data: Partial<Budget>) => {
     startTransition(async () => {
       try {
-        const updated = await updateBudget(id, data)
+        const updated = await updateBudget(
+  id,
+  {
+    ...data,
+    year: data.year ? Number(data.year) : undefined,
+  }
+)
+
         setBudgets((prev) => prev.map((b) => (b.id === id ? updated : b)))
         setEditing(null)
         setIsModalOpen(false)
