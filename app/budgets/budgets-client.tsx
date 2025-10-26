@@ -48,7 +48,7 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
 }
 
   // ✅ Edit an existing budget
-  const handleEdit = async (id, data) => {
+  const handleEdit = async (id: string, data: Partial<Budget>) => {
     startTransition(async () => {
       try {
         const updated = await updateBudget(id, data)
