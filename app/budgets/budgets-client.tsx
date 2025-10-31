@@ -28,7 +28,7 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
   const [isPending, startTransition] = useTransition()
 
   // ✅ Add a new budget
-  const handleAdd = async (data: Omit<Budget, 'id' | 'spent'>) => {
+  const handleAdd = async (data: { category_id: string; amount: number; month: number; year: number }) => {
     startTransition(async () => {
       try {
         const payload = {
