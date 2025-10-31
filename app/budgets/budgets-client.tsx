@@ -81,11 +81,42 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-foreground">Your Budgets</h2>
-      </div>
-      {/* ...rest of your component (cards, table, modals, etc.) */}
+  <div className="space-y-6">
+    <div className="flex items-center justify-between">
+      <h2 className="text-xl font-semibold text-foreground">Your Budgets</h2>
+
+      <Button onClick={() => setIsModalOpen(true)}>
+        <Plus className="mr-2 h-4 w-4" /> Add Budget
+      </Button>
     </div>
-  )
-}
+
+    {/* ✅ Empty state */}
+    {budgets.length === 0 && (
+      <p className="text-muted-foreground">No budgets yet</p>
+    )}
+
+    {/* ✅ Budget list */}
+    <ul className="space-y-2">
+      {budgets.map((b) => (
+        <li key={b.id} className="flex justify-between rounded-lg border p-3">
+          <div>
+            <p className="font-medium">
+              {b.month}/{b.year} — ${b.amount}
+            </p>
+            <p className="text-sm text-muted-foreground">Category: {b.category ?? b.category_id}</p>
+          </div>
+
+          <div className="flex gap-2">
+            <Button size="sm" variant="outline" onClick={() => setEditing(b)}>
+              <Edit className="h-4 w-4" />
+            </Button>
+            <Button size="sm" variant="destructive" onClick={() => handleDelete(b.id)}>
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+)
+
