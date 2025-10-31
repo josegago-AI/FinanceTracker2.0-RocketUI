@@ -7,7 +7,7 @@ import { Plus, Edit, Trash2 } from 'lucide-react'
 import { BudgetForm } from './budget-form'
 import { createBudget, updateBudget, deleteBudget } from './actions'
 import { BudgetCard } from "./components/BudgetCard";
-import { transformBudgets } from "./utils/transformBudget"
+import { transformBudget } from "./utils/transformBudget"
 
 interface Budget {
   id: string
@@ -24,7 +24,7 @@ interface BudgetsClientProps {
 }
 
 export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
-  const [budgets, setBudgets] = useState(() => transformBudgets(initialBudgets))
+  const [budgets, setBudgets] = useState(() => initialBudgets.map(transformBudget))
   const [editing, setEditing] = useState<Budget | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -42,7 +42,7 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
 
 
 
-        const newBudget = transformBudgets([await createBudget(payload)])[0]
+        const newBudget = transformBudget(await createBudget(payload))
         setBudgets((prev: Budget[]) => [newBudget, ...prev])
         setIsModalOpen(false)
       } catch (err) {
@@ -63,7 +63,7 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
       };
 
       // ✅ Get updated record and transform it
-      const updatedItem = transformBudgets([await updateBudget(id, payload)])[0];
+      const updatedItem = transformBudget(await updateBudget(id, payload));
 
       // ✅ Replace item in state
       setBudgets((prev: Budget[]) =>
