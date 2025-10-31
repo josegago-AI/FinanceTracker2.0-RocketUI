@@ -6,19 +6,12 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 
+import type { UIBudget } from "../utils/transformBudget";
+
 interface BudgetCardProps {
-  budget: {
-    id: string
-    name: string
-    category: string | null
-    limit: number
-    spent: number
-    month: string
-    year: string
-    progress?: number
-    status?: string
-  }
+  budget: UIBudget;
 }
+
 
 export function BudgetCard({ budget }: BudgetCardProps) {
   const progress = budget.progress ?? (budget.spent / budget.limit) * 100
