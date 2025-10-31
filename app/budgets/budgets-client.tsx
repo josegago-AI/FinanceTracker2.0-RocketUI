@@ -9,13 +9,13 @@ import { createBudget, updateBudget, deleteBudget } from './actions'
 
 interface Budget {
   id: string
-  name: string
-  category: string
-  limit: number
-  spent: number
-  month: string
-  year: string
+  category_id: string
+  amount: number
+  month: number
+  year: number
+  created_at?: string
 }
+
 
 interface BudgetsClientProps {
   initialBudgets: Budget[]
