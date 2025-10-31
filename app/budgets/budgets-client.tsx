@@ -86,20 +86,20 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
   }
 
   return (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-  {budgets.map((b) => (
-    <BudgetCard key={b.id} budget={b} />
-  ))}
-</div>
-
+  <div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+      {budgets.map((b) => (
+        <BudgetCard key={b.id} budget={b} />
+      ))}
+    </div>
 
     {/* ✅ Empty state */}
     {budgets.length === 0 && (
-      <p className="text-muted-foreground">No budgets yet</p>
+      <p className="text-muted-foreground mt-4">No budgets yet</p>
     )}
 
     {/* ✅ Budget list */}
-    <ul className="space-y-2">
+    <ul className="space-y-2 mt-4">
       {budgets.map((b) => (
         <li key={b.id} className="flex justify-between rounded-lg border p-3">
           <div>
@@ -124,5 +124,6 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
     </ul>
   </div>
 )
+
 
 
