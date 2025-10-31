@@ -86,14 +86,12 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
   }
 
   return (
-  <div className="space-y-6">
-    <div className="flex items-center justify-between">
-      <h2 className="text-xl font-semibold text-foreground">Your Budgets</h2>
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+  {budgets.map((b) => (
+    <BudgetCard key={b.id} budget={b} />
+  ))}
+</div>
 
-      <Button onClick={() => setIsModalOpen(true)}>
-        <Plus className="mr-2 h-4 w-4" /> Add Budget
-      </Button>
-    </div>
 
     {/* ✅ Empty state */}
     {budgets.length === 0 && (
