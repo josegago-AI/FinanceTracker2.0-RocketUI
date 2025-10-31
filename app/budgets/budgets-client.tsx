@@ -18,6 +18,31 @@ interface Budget {
   created_at?: string
 }
 
+// ✅ DB budget shape (from Supabase)
+interface DBBudget {
+  id: string
+  category_id: string
+  amount: number
+  month: number
+  year: number
+  created_at?: string
+  spent?: number // may come from SQL view later
+}
+
+// ✅ UI budget shape after transformBudget()
+interface UIBudget extends DBBudget {
+  allocated: number
+  spent: number
+  remaining: number
+  progress: number
+  weeklySpending: number[]
+  icon: string
+  color: string
+  period: string
+  alertThreshold: number
+  lastTransaction: string
+  transactionCount: number
+}
 
 interface BudgetsClientProps {
   initialBudgets: Budget[]
