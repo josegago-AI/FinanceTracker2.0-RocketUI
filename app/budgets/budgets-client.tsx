@@ -104,7 +104,7 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
               {b.month}/{b.year} — ${b.amount}
             </p>
             <p className="text-sm text-muted-foreground">
-              Category: {b.category ?? b.category_id}
+              Category: {b.category_id}
             </p>
           </div>
 
