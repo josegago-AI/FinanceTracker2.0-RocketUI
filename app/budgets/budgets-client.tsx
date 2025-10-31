@@ -8,6 +8,8 @@ import { BudgetForm } from './budget-form'
 import { createBudget, updateBudget, deleteBudget } from './actions'
 import { BudgetCard } from "./components/BudgetCard";
 import { transformBudget } from "./utils/transformBudget"
+import type { DBBudget } from "./utils/transformBudget"
+
 
 interface Budget {
   id: string
@@ -51,8 +53,8 @@ interface BudgetsClientProps {
 export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
   // ✅ FIX: Cast incoming budgets so transformBudget accepts them
   const [budgets, setBudgets] = useState<UIBudget[]>(() =>
-    initialBudgets.map((b) => transformBudget(b as DBBudget))
-  )
+  initialBudgets.map((b) => transformBudget(b as DBBudget))
+)
 
   const [editing, setEditing] = useState<DBBudget | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
