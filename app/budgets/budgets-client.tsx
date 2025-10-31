@@ -31,12 +31,13 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
   const handleAdd = async (data: { category_id: string; amount: number; month: number; year: number }) => {
     startTransition(async () => {
       try {
-        const payload = {
-          category_id: data.category, // match Supabase schema
-          amount: data.limit, // match Supabase schema
-          month: data.month,
-          year: Number(data.year),
-        }
+              const payload = {
+        category_id: data.category_id,
+        amount: data.amount,
+        month: Number(data.month),
+        year: Number(data.year),
+      }
+
 
         const newBudget = await createBudget(payload)
         setBudgets((prev: Budget[]) => [newBudget, ...prev])
