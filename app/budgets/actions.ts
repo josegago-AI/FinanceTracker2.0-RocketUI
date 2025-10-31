@@ -10,7 +10,7 @@ export async function getBudgets() {
 
   const { data, error } = await supabase
     .from('budgets')
-    .select('id, category_id, amount, month, year, start_date, end_date, created_at')
+    .select('id, category_id, amount, month, year, created_at')
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
 
