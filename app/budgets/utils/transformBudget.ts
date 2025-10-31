@@ -1,18 +1,17 @@
-// Adapts DB budgets to Rocket-UI style fields
-// The raw DB row coming from Supabase
+// ✅ Types for DB & UI budgets
 export interface DBBudget {
   id: string
   category_id: string
   amount: number
   month: number
   year: number
-  spent?: number // <-- ✅ optional until aggregation exists
   created_at?: string
+  spent?: number // optional from DB
 }
 
-// The UI-ready budget type after transformBudget()
 export interface UIBudget extends DBBudget {
   allocated: number
+  spent: number
   remaining: number
   progress: number
   weeklySpending: number[]
@@ -24,39 +23,25 @@ export interface UIBudget extends DBBudget {
   transactionCount: number
 }
 
-// Props
-interface BudgetsClientProps {
-  initialBudgets: DBBudget[]
-}
-
-
+// ✅ Normalize DB to UI
 export function transformBudget(budget: DBBudget): UIBudget {
-  const allocated = Number(budget.amount);
-  const spent = Number(budget.spent ?? 0) // ✅ safe fallback;
-  const remaining = allocated - spent;
-  const progress = allocated > 0 ? (spent / allocated) * 100 : 0;
-
-  // TEMP placeholders until real integration
-  const weeklySpending = [10, 50, 30, 20, 60, 40, 25];
-  const icon = "Wallet";
-  const color = "bg-primary";
-  const period = `${budget.month}/${budget.year}`;
-  const alertThreshold = 80;
-  const lastTransaction = "N/A";
-  const transactionCount = 0;
+  const allocated = Number(budget.amount)
+  const spent = Number(budget.spent ?? 0) // ✅ enforce number
+  const remaining = allocated - spent
+  const progress = allocated > 0 ? (spent / allocated) * 100 : 0
 
   return {
     ...budget,
+    spent,               // ✅ always number
     allocated,
-    spent,
     remaining,
     progress,
-    weeklySpending,
-    icon,
-    color,
-    period,
-    alertThreshold,
-    lastTransaction,
-    transactionCount,
-  };
+    weeklySpending: [10, 50, 30, 20, 60, 40, 25],
+    icon: "Wallet",
+    color: "bg-primary",
+    period: `${budget.month}/${budget.year}`,
+    alertThreshold: 80,
+    lastTransaction: "N/A",
+    transactionCount: 0
+  }
 }
