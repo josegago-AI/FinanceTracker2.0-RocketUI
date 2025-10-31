@@ -6,7 +6,7 @@ export interface DBBudget {
   amount: number
   month: number
   year: number
-  spent: number
+  spent?: number // <-- ✅ optional until aggregation exists
   created_at?: string
 }
 
@@ -32,7 +32,7 @@ interface BudgetsClientProps {
 
 export function transformBudget(budget: DBBudget): UIBudget {
   const allocated = Number(budget.amount);
-  const spent = Number(budget.spent);
+  const spent = Number(budget.spent ?? 0) // ✅ safe fallback;
   const remaining = allocated - spent;
   const progress = allocated > 0 ? (spent / allocated) * 100 : 0;
 
