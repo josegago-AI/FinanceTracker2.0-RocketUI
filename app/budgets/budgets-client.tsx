@@ -87,6 +87,7 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
 
   return (
   <div>
+    {/* ✅ Budget grid cards */}
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
       {budgets.map((b) => (
         <BudgetCard key={b.id} budget={b} />
@@ -101,7 +102,10 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
     {/* ✅ Budget list */}
     <ul className="space-y-2 mt-4">
       {budgets.map((b) => (
-        <li key={b.id} className="flex justify-between rounded-lg border p-3">
+        <li
+          key={b.id}
+          className="flex justify-between rounded-lg border p-3"
+        >
           <div>
             <p className="font-medium">
               {b.month}/{b.year} — ${b.amount}
@@ -123,7 +127,8 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
       ))}
     </ul>
   </div>
-)
+);
+
 
 
 
