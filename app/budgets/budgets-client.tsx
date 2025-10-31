@@ -49,9 +49,11 @@ interface BudgetsClientProps {
 }
 
 export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
+  // ✅ FIX: Cast incoming budgets so transformBudget accepts them
   const [budgets, setBudgets] = useState<UIBudget[]>(() =>
-  initialBudgets.map((b) => transformBudget(b))
-)
+    initialBudgets.map((b) => transformBudget(b as DBBudget))
+  )
+
   const [editing, setEditing] = useState<DBBudget | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -60,17 +62,17 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
   const handleAdd = async (data: { category_id: string; amount: number; month: number; year: number }) => {
     startTransition(async () => {
       try {
-              const payload = {
-  category_id: data.category_id,
-  amount: data.amount,
-  month: String(data.month),   // ✅ convert to string
-  year: Number(data.year),     // ✅ stays number
-}
-
-
+        const payload = {
+          category_id: data.category_id,
+          amount: data.amount,
+          month: String(data.month),
+          year: Number(data.year),
+        }
 
         const newBudget = transformBudget(await createBudget(payload))
-        setBudgets((prev: Budget[]) => [newBudget, ...prev])
+
+        // ✅ FIX: prev type must be UIBudget[]
+        setBudgets((prev: UIBudget[]) => [newBudget, ...prev])
         setIsModalOpen(false)
       } catch (err) {
         console.error('Error creating budget:', err)
@@ -78,41 +80,38 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
     })
   }
 
-  // ✅ Edit an existing budget
+  // ✅ Edit budget
   const handleEdit = async (id: string, data: Partial<Budget>) => {
-  startTransition(async () => {
-    try {
-      const payload = {
-        category_id: data.category_id,
-        amount: data.amount,
-        month: data.month !== undefined ? String(data.month) : undefined,
-        year: data.year !== undefined ? Number(data.year) : undefined,
-      };
+    startTransition(async () => {
+      try {
+        const payload = {
+          category_id: data.category_id,
+          amount: data.amount,
+          month: data.month !== undefined ? String(data.month) : undefined,
+          year: data.year !== undefined ? Number(data.year) : undefined,
+        }
 
-      // ✅ Get updated record and transform it
-      const updatedItem = transformBudget(await updateBudget(id, payload));
+        const updatedItem = transformBudget(await updateBudget(id, payload))
 
-      // ✅ Replace item in state
-      setBudgets((prev: Budget[]) =>
-        prev.map((b) => (b.id === id ? updatedItem : b))
-      );
+        setBudgets((prev: UIBudget[]) =>
+          prev.map((b) => (b.id === id ? updatedItem : b))
+        )
 
-      setEditing(null);
-      setIsModalOpen(false);
-    } catch (err) {
-      console.error("Error updating budget:", err);
-    }
-  });
-};
+        setEditing(null)
+        setIsModalOpen(false)
+      } catch (err) {
+        console.error("Error updating budget:", err)
+      }
+    })
+  }
 
-
-  // ✅ Delete a budget
+  // ✅ Delete budget
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this budget?')) return
     startTransition(async () => {
       try {
         await deleteBudget(id)
-        setBudgets((prev: Budget[]) => prev.filter((b) => b.id !== id))
+        setBudgets((prev: UIBudget[]) => prev.filter((b) => b.id !== id))
       } catch (err) {
         console.error('Error deleting budget:', err)
       }
@@ -120,50 +119,42 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
   }
 
   return (
-  <div className="space-y-6">
+    <div className="space-y-6">
 
-    {/* ✅ Budget grid cards */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-      {budgets.map((b) => (
-        <BudgetCard key={b.id} budget={b} />
-      ))}
+      {/* ✅ Budget grid cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        {budgets.map((b) => (
+          <BudgetCard key={b.id} budget={b} />
+        ))}
+      </div>
+
+      {/* ✅ Empty state */}
+      {budgets.length === 0 && (
+        <p className="text-muted-foreground mt-4">No budgets yet</p>
+      )}
+
+      {/* ✅ Debug list — temporary */}
+      <ul className="space-y-2 mt-4">
+        {budgets.map((b) => (
+          <li key={b.id} className="flex justify-between rounded-lg border p-3">
+            <div>
+              <p className="font-medium">{b.month}/{b.year} — ${b.amount}</p>
+              <p className="text-sm text-muted-foreground">Category: {b.category_id}</p>
+            </div>
+
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={() => setEditing(b)}>
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button size="sm" variant="destructive" onClick={() => handleDelete(b.id)}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
-
-    {/* ✅ Empty state */}
-    {budgets.length === 0 && (
-      <p className="text-muted-foreground mt-4">No budgets yet</p>
-    )}
-
-    {/* ✅ Debug list (temporary, removable) */}
-    <ul className="space-y-2 mt-4">
-      {budgets.map((b) => (
-        <li
-          key={b.id}
-          className="flex justify-between rounded-lg border p-3"
-        >
-          <div>
-            <p className="font-medium">
-              {b.month}/{b.year} — ${b.amount}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Category: {b.category_id}
-            </p>
-          </div>
-
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => setEditing(b)}>
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button size="sm" variant="destructive" onClick={() => handleDelete(b.id)}>
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
-        </li>
-      ))}
-    </ul>
-
-  </div>
-);
+  )
 }
 
 export default BudgetsClient;
