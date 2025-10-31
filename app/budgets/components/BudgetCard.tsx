@@ -14,8 +14,8 @@ interface BudgetCardProps {
 
 
 export function BudgetCard({ budget }: BudgetCardProps) {
-  const progress = budget.progress ?? (budget.spent / budget.limit) * 100
-  const remaining = budget.limit - budget.spent
+  const progress = budget.progress ?? (budget.spent / budget.allocated) * 100
+  const remaining = budget.allocated - budget.spent
 
   const statusColor = {
     "on-track": "text-green-500",
@@ -56,7 +56,7 @@ export function BudgetCard({ budget }: BudgetCardProps) {
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Allocated</span>
-            <span className="font-medium">${budget.limit}</span>
+            <span className="font-medium">${budget.allocated}</span>
           </div>
 
           <div className="flex justify-between">
