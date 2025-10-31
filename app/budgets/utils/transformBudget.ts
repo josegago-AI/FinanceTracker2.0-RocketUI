@@ -1,19 +1,40 @@
 // Adapts DB budgets to Rocket-UI style fields
-export function transformBudget(budget) {
-  // Map real DB values
+export interface DBBudget {
+  id: string;
+  amount: number | string;
+  spent: number | string;
+  month: number;
+  year: number;
+  category_id: string;
+}
+
+export interface UIBudget extends DBBudget {
+  allocated: number;
+  remaining: number;
+  progress: number;
+  weeklySpending: number[];
+  icon: string;
+  color: string;
+  period: string;
+  alertThreshold: number;
+  lastTransaction: string;
+  transactionCount: number;
+}
+
+export function transformBudget(budget: DBBudget): UIBudget {
   const allocated = Number(budget.amount);
   const spent = Number(budget.spent);
   const remaining = allocated - spent;
   const progress = allocated > 0 ? (spent / allocated) * 100 : 0;
 
-  // TEMP FAKE DATA until real schema upgrade
-  const weeklySpending = [10, 50, 30, 20, 60, 40, 25]; // mock trending bars
-  const icon = "Wallet"; // default, later per category
-  const color = "bg-primary"; // default
+  // TEMP placeholders until real integration
+  const weeklySpending = [10, 50, 30, 20, 60, 40, 25];
+  const icon = "Wallet";
+  const color = "bg-primary";
   const period = `${budget.month}/${budget.year}`;
-  const alertThreshold = 80; // static for now
-  const lastTransaction = "N/A"; // until linked to tx table
-  const transactionCount = 0; // until aggregation added
+  const alertThreshold = 80;
+  const lastTransaction = "N/A";
+  const transactionCount = 0;
 
   return {
     ...budget,
