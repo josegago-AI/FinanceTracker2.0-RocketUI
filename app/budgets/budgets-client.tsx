@@ -22,20 +22,7 @@ interface Budget {
 
 
 
-// ✅ UI budget shape after transformBudget()
-interface UIBudget extends DBBudget {
-  allocated: number
-  spent: number
-  remaining: number
-  progress: number
-  weeklySpending: number[]
-  icon: string
-  color: string
-  period: string
-  alertThreshold: number
-  lastTransaction: string
-  transactionCount: number
-}
+
 
 interface BudgetsClientProps {
   initialBudgets: Budget[]
