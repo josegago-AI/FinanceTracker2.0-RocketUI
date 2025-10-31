@@ -32,11 +32,12 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
     startTransition(async () => {
       try {
               const payload = {
-        category_id: data.category_id,
-        amount: data.amount,
-        month: Number(data.month),
-        year: Number(data.year),
-      }
+  category_id: data.category_id,
+  amount: data.amount,
+  month: String(data.month),   // ✅ convert to string
+  year: Number(data.year),     // ✅ stays number
+}
+
 
 
         const newBudget = await createBudget(payload)
