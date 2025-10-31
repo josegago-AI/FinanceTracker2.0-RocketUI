@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Plus, Edit, Trash2 } from 'lucide-react'
 import { BudgetForm } from './budget-form'
 import { createBudget, updateBudget, deleteBudget } from './actions'
+import BudgetCard from "./BudgetCard";
+
 
 interface Budget {
   id: string
