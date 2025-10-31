@@ -7,7 +7,7 @@ import { Plus, Edit, Trash2 } from 'lucide-react'
 import { BudgetForm } from './budget-form'
 import { createBudget, updateBudget, deleteBudget } from './actions'
 import { BudgetCard } from "./components/BudgetCard";
-
+import { transformBudgets } from "./utils/transformBudget"
 
 interface Budget {
   id: string
@@ -24,7 +24,7 @@ interface BudgetsClientProps {
 }
 
 export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
-  const [budgets, setBudgets] = useState<Budget[]>(initialBudgets)
+  const [budgets, setBudgets] = useState(() => transformBudgets(initialBudgets))
   const [editing, setEditing] = useState<Budget | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -42,7 +42,7 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
 
 
 
-        const newBudget = await createBudget(payload)
+        const newBudget = transformBudgets([await createBudget(payload)])[0]
         setBudgets((prev: Budget[]) => [newBudget, ...prev])
         setIsModalOpen(false)
       } catch (err) {
@@ -53,26 +53,31 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
 
   // ✅ Edit an existing budget
   const handleEdit = async (id: string, data: Partial<Budget>) => {
-    startTransition(async () => {
-      try {
-        const updated = await updateBudget(id, {
-  category_id: data.category_id,
-  amount: data.amount,
-  month: data.month !== undefined ? String(data.month) : undefined,
-  year: data.year !== undefined ? Number(data.year) : undefined,
-})
+  startTransition(async () => {
+    try {
+      const payload = {
+        category_id: data.category_id,
+        amount: data.amount,
+        month: data.month !== undefined ? String(data.month) : undefined,
+        year: data.year !== undefined ? Number(data.year) : undefined,
+      };
 
+      // ✅ Get updated record and transform it
+      const updatedItem = transformBudgets([await updateBudget(id, payload)])[0];
 
-        setBudgets((prev: Budget[]) =>
-          prev.map((b) => (b.id === id ? updated : b))
-        )
-        setEditing(null)
-        setIsModalOpen(false)
-      } catch (err) {
-        console.error('Error updating budget:', err)
-      }
-    })
-  }
+      // ✅ Replace item in state
+      setBudgets((prev: Budget[]) =>
+        prev.map((b) => (b.id === id ? updatedItem : b))
+      );
+
+      setEditing(null);
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error("Error updating budget:", err);
+    }
+  });
+};
+
 
   // ✅ Delete a budget
   const handleDelete = async (id: string) => {
