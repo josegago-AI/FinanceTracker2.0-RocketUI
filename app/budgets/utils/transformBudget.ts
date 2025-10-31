@@ -7,6 +7,7 @@ export interface DBBudget {
   year: number
   created_at?: string
   spent?: number // optional from DB
+  category_name?: string // <-- if join query includes it
 }
 
 export interface UIBudget extends DBBudget {
@@ -21,18 +22,24 @@ export interface UIBudget extends DBBudget {
   alertThreshold: number
   lastTransaction: string
   transactionCount: number
+  status: "on-track" | "warning" | "exceeded" // ✅ needed for BudgetCard
+  category: string // ✅ what UI expects
 }
 
-// ✅ Normalize DB to UI
+// ✅ Normalize DB → UI
 export function transformBudget(budget: DBBudget): UIBudget {
   const allocated = Number(budget.amount)
-  const spent = Number(budget.spent ?? 0) // ✅ enforce number
+  const spent = Number(budget.spent ?? 0)
   const remaining = allocated - spent
   const progress = allocated > 0 ? (spent / allocated) * 100 : 0
 
+  // ✅ simple status logic for now (0 errors)
+  const status: "on-track" | "warning" | "exceeded" =
+    progress < 80 ? "on-track" : progress < 100 ? "warning" : "exceeded"
+
   return {
     ...budget,
-    spent,               // ✅ always number
+    spent,
     allocated,
     remaining,
     progress,
@@ -42,6 +49,8 @@ export function transformBudget(budget: DBBudget): UIBudget {
     period: `${budget.month}/${budget.year}`,
     alertThreshold: 80,
     lastTransaction: "N/A",
-    transactionCount: 0
+    transactionCount: 0,
+    status,
+    category: budget.category_name ?? "Uncategorized" // ✅ fallback
   }
 }
