@@ -27,7 +27,7 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
   const [budgets, setBudgets] = useState<UIBudget[]>(() =>
   initialBudgets.map((b) => transformBudget(b))
 )
-  const [editing, setEditing] = useState<Budget | null>(null)
+  const [editing, setEditing] = useState<DBBudget | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
 
