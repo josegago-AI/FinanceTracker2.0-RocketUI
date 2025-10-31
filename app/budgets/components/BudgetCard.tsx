@@ -5,35 +5,37 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
-
-import type { UIBudget } from "../utils/transformBudget";
+import type { UIBudget } from "../utils/transformBudget"
 
 interface BudgetCardProps {
   budget: UIBudget;
 }
 
+// define allowed status values
+type BudgetStatus = "on-track" | "warning" | "exceeded";
 
 export function BudgetCard({ budget }: BudgetCardProps) {
   const progress = budget.progress ?? (budget.spent / budget.allocated) * 100
   const remaining = budget.allocated - budget.spent
+  const status = (budget.status as BudgetStatus) ?? "on-track"
 
-  const statusColor = {
+  const statusColor: Record<BudgetStatus, string> = {
     "on-track": "text-green-500",
     "warning": "text-yellow-500",
-    "exceeded": "text-red-500"
-  }[budget.status ?? "on-track"]
+    "exceeded": "text-red-500",
+  }
 
-  const barColor = {
+  const barColor: Record<BudgetStatus, string> = {
     "on-track": "bg-green-500",
     "warning": "bg-yellow-500",
-    "exceeded": "bg-red-500"
-  }[budget.status ?? "on-track"]
+    "exceeded": "bg-red-500",
+  }
 
   return (
     <motion.div whileHover={{ scale: 1.02 }}>
       <Card className="p-6 border-border bg-card shadow-sm hover:shadow-md transition-all">
         
-        {/* Top row */}
+        {/* Top */}
         <div className="flex justify-between items-center mb-4">
           <div>
             <h3 className="font-semibold text-lg">{budget.category}</h3>
@@ -52,7 +54,7 @@ export function BudgetCard({ budget }: BudgetCardProps) {
           </div>
         </div>
 
-        {/* Data rows */}
+        {/* Data */}
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Allocated</span>
@@ -61,7 +63,7 @@ export function BudgetCard({ budget }: BudgetCardProps) {
 
           <div className="flex justify-between">
             <span className="text-muted-foreground">Spent</span>
-            <span className={cn("font-semibold", statusColor)}>
+            <span className={cn("font-semibold", statusColor[status])}>
               ${budget.spent}
             </span>
           </div>
@@ -74,18 +76,18 @@ export function BudgetCard({ budget }: BudgetCardProps) {
           </div>
         </div>
 
-        {/* Progress bar */}
+        {/* Progress */}
         <div className="mt-4">
           <div className="flex justify-between text-xs mb-1">
             <span className="text-muted-foreground">Progress</span>
-            <span className={cn("font-medium", statusColor)}>
+            <span className={cn("font-medium", statusColor[status])}>
               {progress.toFixed(1)}%
             </span>
           </div>
 
           <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
             <motion.div 
-              className={`h-2 ${barColor}`}
+              className={cn("h-2", barColor[status])}
               initial={{ width: 0 }}
               animate={{ width: `${Math.min(progress, 100)}%` }}
             />
