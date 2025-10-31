@@ -86,7 +86,7 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
   }
 
   return (
-  <div>
+  <div className="space-y-6">
 
     {/* ✅ Budget grid cards */}
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
@@ -100,7 +100,7 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
       <p className="text-muted-foreground mt-4">No budgets yet</p>
     )}
 
-    {/* ✅ Budget list */}
+    {/* ✅ Debug list (temporary, removable) */}
     <ul className="space-y-2 mt-4">
       {budgets.map((b) => (
         <li
@@ -130,3 +130,4 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
 
   </div>
 );
+
