@@ -130,8 +130,3 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
 
   </div>
 );
-
-
-
-
-
