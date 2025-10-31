@@ -124,5 +124,5 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
     </ul>
   </div>
 )
-}
+
 
