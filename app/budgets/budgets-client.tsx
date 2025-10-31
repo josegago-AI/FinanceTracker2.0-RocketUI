@@ -103,7 +103,9 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
             <p className="font-medium">
               {b.month}/{b.year} — ${b.amount}
             </p>
-            <p className="text-sm text-muted-foreground">Category: {b.category ?? b.category_id}</p>
+            <p className="text-sm text-muted-foreground">
+              Category: {b.category ?? b.category_id}
+            </p>
           </div>
 
           <div className="flex gap-2">
@@ -119,4 +121,5 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
     </ul>
   </div>
 )
+}
 
