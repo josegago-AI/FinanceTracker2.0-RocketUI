@@ -1,25 +1,34 @@
 // Adapts DB budgets to Rocket-UI style fields
+// The raw DB row coming from Supabase
 export interface DBBudget {
-  id: string;
-  amount: number | string;
-  spent: number | string;
-  month: number;
-  year: number;
-  category_id: string;
+  id: string
+  category_id: string
+  amount: number
+  month: number
+  year: number
+  spent: number
+  created_at?: string
 }
 
+// The UI-ready budget type after transformBudget()
 export interface UIBudget extends DBBudget {
-  allocated: number;
-  remaining: number;
-  progress: number;
-  weeklySpending: number[];
-  icon: string;
-  color: string;
-  period: string;
-  alertThreshold: number;
-  lastTransaction: string;
-  transactionCount: number;
+  allocated: number
+  remaining: number
+  progress: number
+  weeklySpending: number[]
+  icon: string
+  color: string
+  period: string
+  alertThreshold: number
+  lastTransaction: string
+  transactionCount: number
 }
+
+// Props
+interface BudgetsClientProps {
+  initialBudgets: DBBudget[]
+}
+
 
 export function transformBudget(budget: DBBudget): UIBudget {
   const allocated = Number(budget.amount);
