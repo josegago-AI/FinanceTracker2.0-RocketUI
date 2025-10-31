@@ -7,8 +7,8 @@ import { Plus, Edit, Trash2 } from 'lucide-react'
 import { BudgetForm } from './budget-form'
 import { createBudget, updateBudget, deleteBudget } from './actions'
 import { BudgetCard } from "./components/BudgetCard";
-import { transformBudget } from "./utils/transformBudget"
-import type { DBBudget } from "./utils/transformBudget"
+import { transformBudget, DBBudget, UIBudget } from "./utils/transformBudget"
+
 
 
 interface Budget {
