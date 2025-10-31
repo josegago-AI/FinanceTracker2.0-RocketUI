@@ -54,9 +54,12 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
     startTransition(async () => {
       try {
         const updated = await updateBudget(id, {
-          ...data,
-          year: data.year ? Number(data.year) : undefined,
-        })
+  category_id: data.category_id,
+  amount: data.amount,
+  month: data.month !== undefined ? String(data.month) : undefined,
+  year: data.year !== undefined ? Number(data.year) : undefined,
+})
+
 
         setBudgets((prev: Budget[]) =>
           prev.map((b) => (b.id === id ? updated : b))
