@@ -87,6 +87,7 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
 
   return (
   <div>
+
     {/* ✅ Budget grid cards */}
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
       {budgets.map((b) => (
@@ -126,8 +127,10 @@ export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
         </li>
       ))}
     </ul>
+
   </div>
 );
+
 
 
 
