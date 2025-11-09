@@ -1,75 +1,36 @@
+// app/budgets/actions.ts
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
-import { getUserId } from '@/lib/auth/getUserId'
-
 export async function getBudgets() {
-  const supabase = createClient()
-  const userId = await getUserId()
-  if (!userId) return []
-
-  const { data, error } = await supabase
-    .from('budgets')
-    .select('id, category_id, amount, month, year, created_at')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-
-  if (error) {
-    console.error('Error fetching budgets:', error)
-    return []
-  }
-
-  return data
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/budgets`, {
+    cache: 'no-store',
+  })
+  if (!res.ok) throw new Error('Failed to fetch budgets')
+  return res.json()
 }
 
-export async function createBudget(budget: {
-  category_id: string
-  amount: number
-  month: string
-  year: number
-}) {
-  const supabase = createClient()
-  const userId = await getUserId()
-  if (!userId) throw new Error('Unauthorized')
-
-  const { data, error } = await supabase
-    .from('budgets')
-    .insert([{ ...budget, user_id: userId }])
-    .select()
-    .single()
-
-  if (error) throw error
-  return data
+export async function createBudget(data: any) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/budgets`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) throw new Error('Failed to create budget')
+  return res.json()
 }
 
-export async function updateBudget(id: string, updates: Partial<{ category_id: string; amount: number; month: string; year: number }>) {
-  const supabase = createClient()
-  const userId = await getUserId()
-  if (!userId) throw new Error('Unauthorized')
-
-  const { data, error } = await supabase
-    .from('budgets')
-    .update(updates)
-    .eq('id', id)
-    .eq('user_id', userId)
-    .select()
-    .single()
-
-  if (error) throw error
-  return data
+export async function updateBudget(id: string, data: any) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/budgets/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) throw new Error('Failed to update budget')
+  return res.json()
 }
 
 export async function deleteBudget(id: string) {
-  const supabase = createClient()
-  const userId = await getUserId()
-  if (!userId) throw new Error('Unauthorized')
-
-  const { error } = await supabase
-    .from('budgets')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', userId)
-
-  if (error) throw error
-  return true
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/budgets/${id}`, {
+    method: 'DELETE',
+  })
+  if (!res.ok) throw new Error('Failed to delete budget')
+  return res.json()
 }
