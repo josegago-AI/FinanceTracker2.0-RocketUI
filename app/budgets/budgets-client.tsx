@@ -1,140 +1,75 @@
+// app/budgets/budgets-client.tsx
 'use client'
 
-import { useState, useTransition } from 'react'
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { Plus, Edit, Trash2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { BudgetList } from './components/BudgetList'
+import { BudgetEmptyState } from './components/BudgetEmptyState'
 import { BudgetForm } from './budget-form'
-import { createBudget, updateBudget, deleteBudget } from './actions'
-import { BudgetCard } from "./components/BudgetCard";
-import { transformBudget, DBBudget, UIBudget } from "./utils/transformBudget"
+import { Button } from '@/components/ui/button'
+import { getBudgets, createBudget, updateBudget } from './actions'
 
+export default function BudgetsClient() {
+  const [budgets, setBudgets] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [openForm, setOpenForm] = useState(false)
+  const [editBudget, setEditBudget] = useState<any | null>(null)
 
+  useEffect(() => {
+    load()
+  }, [])
 
-interface Budget {
-  id: string
-  category_id: string
-  amount: number
-  month: number
-  year: number
-  created_at?: string
-}
-
-
-
-
-
-interface BudgetsClientProps {
-  initialBudgets: Budget[]
-}
-
-export function BudgetsClient({ initialBudgets }: BudgetsClientProps) {
-  // ✅ FIX: Cast incoming budgets so transformBudget accepts them
-  const [budgets, setBudgets] = useState<UIBudget[]>(() =>
-  initialBudgets.map((b) => transformBudget(b as DBBudget))
-)
-
-  const [editing, setEditing] = useState<DBBudget | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isPending, startTransition] = useTransition()
-
-  // ✅ Add a new budget
-  const handleAdd = async (data: { category_id: string; amount: number; month: number; year: number }) => {
-    startTransition(async () => {
-      try {
-        const payload = {
-          category_id: data.category_id,
-          amount: data.amount,
-          month: String(data.month),
-          year: Number(data.year),
-        }
-
-        const newBudget = transformBudget(await createBudget(payload))
-
-        // ✅ FIX: prev type must be UIBudget[]
-        setBudgets((prev: UIBudget[]) => [newBudget, ...prev])
-        setIsModalOpen(false)
-      } catch (err) {
-        console.error('Error creating budget:', err)
-      }
-    })
+  async function load() {
+    setLoading(true)
+    try {
+      const data = await getBudgets()
+      setBudgets(data)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  // ✅ Edit budget
-  const handleEdit = async (id: string, data: Partial<Budget>) => {
-    startTransition(async () => {
-      try {
-        const payload = {
-          category_id: data.category_id,
-          amount: data.amount,
-          month: data.month !== undefined ? String(data.month) : undefined,
-          year: data.year !== undefined ? Number(data.year) : undefined,
-        }
-
-        const updatedItem = transformBudget(await updateBudget(id, payload))
-
-        setBudgets((prev: UIBudget[]) =>
-          prev.map((b) => (b.id === id ? updatedItem : b))
-        )
-
-        setEditing(null)
-        setIsModalOpen(false)
-      } catch (err) {
-        console.error("Error updating budget:", err)
-      }
-    })
+  function openCreate() {
+    setEditBudget(null)
+    setOpenForm(true)
   }
 
-  // ✅ Delete budget
-  const handleDelete = async (id: string) => {
-    if (!confirm('Delete this budget?')) return
-    startTransition(async () => {
-      try {
-        await deleteBudget(id)
-        setBudgets((prev: UIBudget[]) => prev.filter((b) => b.id !== id))
-      } catch (err) {
-        console.error('Error deleting budget:', err)
-      }
-    })
+  function openEdit(budget: any) {
+    setEditBudget(budget)
+    setOpenForm(true)
+  }
+
+  async function handleSubmit(formData: any) {
+    if (editBudget) {
+      await updateBudget(editBudget.id, formData)
+    } else {
+      await createBudget(formData)
+    }
+    await load()
+    setOpenForm(false)
   }
 
   return (
-    <div className="space-y-6">
-
-      {/* ✅ Budget grid cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        {budgets.map((b) => (
-          <BudgetCard key={b.id} budget={b} />
-        ))}
+    <div>
+      <div className="flex justify-between mb-8">
+        <h2 className="text-2xl font-semibold">Your Budgets</h2>
+        <Button onClick={openCreate}>New Budget</Button>
       </div>
 
-      {/* ✅ Empty state */}
-      {budgets.length === 0 && (
-        <p className="text-muted-foreground mt-4">No budgets yet</p>
+      {loading ? (
+        <p>Loading...</p>
+      ) : budgets.length === 0 ? (
+        <BudgetEmptyState onCreate={openCreate} />
+      ) : (
+        <BudgetList budgets={budgets} />
       )}
 
-      {/* ✅ Debug list — temporary */}
-      <ul className="space-y-2 mt-4">
-        {budgets.map((b) => (
-          <li key={b.id} className="flex justify-between rounded-lg border p-3">
-            <div>
-              <p className="font-medium">{b.month}/{b.year} — ${b.amount}</p>
-              <p className="text-sm text-muted-foreground">Category: {b.category_id}</p>
-            </div>
-
-            <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => setEditing(b)}>
-                <Edit className="h-4 w-4" />
-              </Button>
-              <Button size="sm" variant="destructive" onClick={() => handleDelete(b.id)}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {openForm && (
+        <BudgetForm
+          initialData={editBudget}
+          onSubmit={handleSubmit}
+          onCancel={() => setOpenForm(false)}
+        />
+      )}
     </div>
   )
 }
-
-export default BudgetsClient;
