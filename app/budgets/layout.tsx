@@ -1,4 +1,5 @@
 // app/budgets/layout.tsx
+
 export const metadata = { title: 'Budgets' }
 
 export default function BudgetsLayout({
@@ -8,7 +9,9 @@ export default function BudgetsLayout({
 }) {
   return (
     <main className="min-h-screen bg-background pt-16">
-      <div className="max-w-7xl mx-auto px-6 py-8">{children}</div>
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {children}
+      </div>
     </main>
   )
 }
