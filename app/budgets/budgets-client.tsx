@@ -52,7 +52,7 @@ export default function BudgetsClient() {
     <div>
       <div className="flex justify-between mb-8">
         <h2 className="text-2xl font-semibold">Your Budgets</h2>
-        <Button onClick={openCreate}>New Budget</Button>
+        <Button onClick={openCreate}>+ New Budget</Button>
       </div>
 
       {loading ? (
