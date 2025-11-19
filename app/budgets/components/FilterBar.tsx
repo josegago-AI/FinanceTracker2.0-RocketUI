@@ -166,6 +166,3 @@ export function FilterBar({
 }
 
 export type { BudgetStatus, BudgetPeriod, BudgetSort }
- 
-EOF
-)
