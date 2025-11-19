@@ -1,3 +1,5 @@
+'use client'
+
 // app/budgets/components/KPIHeader.tsx
 
 const STATUS = {
