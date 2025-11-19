@@ -1,9 +1,9 @@
 // app/budgets/components/BudgetGrid.tsx
 
 const STATUS = {
-  safe: 'text-green-500',
-  warn: 'text-yellow-500',
-  danger: 'text-red-500',
+  safe: 'text-success',
+  warn: 'text-warning',
+  danger: 'text-error',
 } as const
 
 type StatusKey = keyof typeof STATUS
@@ -69,11 +69,11 @@ export function BudgetGrid() {
         {MOCK_BUDGETS.map((budget) => (
           <article
             key={budget.id}
-            className="rounded-xl border border-border/60 bg-card/80 p-5 shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_30px_rgba(0,0,0,0.08)]"
+            className="rounded-xl border border-border/70 bg-card p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
           >
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">{budget.name}</p>
+                <p className="text-sm font-semibold text-primary">{budget.name}</p>
                 <p className="text-xs text-muted-foreground">Trend {budget.trend}</p>
               </div>
               <span className={`text-xs font-semibold uppercase tracking-wide ${STATUS[budget.status]}`}>
@@ -83,27 +83,29 @@ export function BudgetGrid() {
               </span>
             </div>
 
-            <dl className="mt-4 grid grid-cols-3 gap-3 text-sm">
-              <div>
+            <dl className="mt-5 space-y-3 text-sm">
+              <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground">Allocated</dt>
-                <dd className="font-semibold">{budget.allocated}</dd>
+                <dd className="font-semibold text-foreground">{budget.allocated}</dd>
               </div>
-              <div>
+              <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground">Spent</dt>
-                <dd className="font-semibold">{budget.spent}</dd>
+                <dd className="font-semibold text-foreground">{budget.spent}</dd>
+              </div>
+              <div className="flex items-center justify-between">
+                <dt className="text-muted-foreground">Remaining</dt>
+                <dd className="font-semibold text-foreground">{budget.remaining}</dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">Remaining</dt>
-                <dd className="font-semibold">{budget.remaining}</dd>
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>Progress</span>
+                  <span className="font-semibold text-foreground">{budget.progress}%</span>
+                </div>
+                <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
+                  <div className="h-full rounded-full bg-primary" style={{ width: `${budget.progress}%` }} />
+                </div>
               </div>
             </dl>
-
-            <div className="mt-4 h-2 w-full rounded-full bg-muted">
-              <div
-                className="h-full rounded-full bg-primary"
-                style={{ width: `${budget.progress}%` }}
-              />
-            </div>
           </article>
         ))}
       </div>

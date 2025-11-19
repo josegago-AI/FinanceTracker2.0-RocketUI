@@ -1,6 +1,6 @@
 // app/budgets/page.tsx
 
-import { BudgetGrid } from './components/BudgetGrid'
+import BudgetsClient from './budgets-client'
 import { BudgetOverviewCard } from './components/BudgetOverviewCard'
 import { FilterBar } from './components/FilterBar'
 import { KPIHeader } from './components/KPIHeader'
@@ -19,7 +19,7 @@ export default function BudgetsPage() {
       <KPIHeader />
       <BudgetOverviewCard />
       <FilterBar />
-      <BudgetGrid />
+      <BudgetsClient />
     </section>
   )
 }
