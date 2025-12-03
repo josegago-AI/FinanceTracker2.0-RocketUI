@@ -9,10 +9,9 @@ export default function BudgetsPage() {
   return (
     <section className="space-y-8">
       <div className="space-y-2">
-        <p className="text-sm font-medium text-primary">Budgets</p>
-        <h1 className="text-3xl font-semibold tracking-tight">Plan. Adjust. Stay on track.</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground">Budgets</h1>
         <p className="text-base text-muted-foreground">
-          KPI-first overview of this month’s allocations before digging into individual categories.
+          Create and manage your spending budgets to stay on track with your financial goals.
         </p>
       </div>
 
