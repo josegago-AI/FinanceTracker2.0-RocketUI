@@ -9,12 +9,10 @@ export default function BudgetsPage() {
   return (
     <main className="max-w-7xl mx-auto px-6 py-8">
       <header className="mb-8">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground">Budgets</h1>
-          <p className="text-base text-muted-foreground">
-            Create and manage your spending budgets to stay on track with your financial goals.
-          </p>
-        </div>
+        <h1 className="text-2xl font-bold text-foreground">Budgets</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Create and manage your spending budgets to stay on track with your financial goals.
+        </p>
       </header>
 
       <section className="space-y-8">
