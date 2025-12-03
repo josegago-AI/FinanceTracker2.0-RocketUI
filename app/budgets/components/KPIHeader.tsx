@@ -1,128 +1,54 @@
-// app/budgets/components/KPIHeader.tsx
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { cn } from '@/lib/utils'
+// app/budgets/components/KPIHeader.tsx
 
-type KPIStatus = 'safe' | 'warn' | 'danger'
+import type { LucideIcon } from 'lucide-react'
+import { CircleDollarSign, Layers, PieChart, TrendingUp, Wallet2 } from 'lucide-react'
 
-const KPI_STATUS_COLORS: Record<
-  KPIStatus,
-  { text: string; bg: string }
-> = {
-  safe: { text: 'text-green-500', bg: 'bg-green-500' },
-  warn: { text: 'text-yellow-500', bg: 'bg-yellow-500' },
-  danger: { text: 'text-red-500', bg: 'bg-red-500' },
-}
-
-export type KPIItem = {
+type KPIConfig = {
   key: string
   label: string
   value: string
-  delta?: string
-  progress?: string
-  status: KPIStatus
-  icon?: string
+  icon: LucideIcon
+  valueTone?: string
 }
 
-export interface KPIHeaderProps {
-  kpis: KPIItem[]
-  activeKpi: string
-  onFilterChange: (key: string) => void
-}
-
-const KPI_ORDER = [
-  'totalAllocated',
-  'totalSpent',
-  'remaining',
-  'otherSpend',
-  'overallProgress',
+const KPI_ITEMS: KPIConfig[] = [
+  { key: 'totalAllocated', label: 'Total Allocated', value: '$12,500', icon: Wallet2 },
+  { key: 'totalSpent', label: 'Total Spent', value: '$8,950', icon: TrendingUp },
+  { key: 'remaining', label: 'Remaining', value: '$3,550', icon: CircleDollarSign, valueTone: 'text-success' },
+  { key: 'otherSpend', label: 'Other Spend', value: '$420', icon: Layers },
+  { key: 'overallProgress', label: 'Overall Progress', value: '72%', icon: PieChart, valueTone: 'text-warning' },
 ]
 
-export function KPIHeader({ kpis, activeKpi, onFilterChange }: KPIHeaderProps) {
-  const [announcement, setAnnouncement] = useState('')
-
-  const orderedKpis = useMemo(() => {
-    const prioritized = KPI_ORDER.map((key) =>
-      kpis.find((kpi) => kpi.key === key)
-    ).filter((kpi): kpi is KPIItem => Boolean(kpi))
-
-    const remaining = kpis.filter(
-      (kpi) => !KPI_ORDER.includes(kpi.key)
-    )
-
-    return [...prioritized, ...remaining]
-  }, [kpis])
-
-  useEffect(() => {
-    const activeItem = orderedKpis.find((kpi) => kpi.key === activeKpi)
-    if (activeItem) {
-      setAnnouncement(`${activeItem.label} selected`)
-    }
-  }, [activeKpi, orderedKpis])
-
+export function KPIHeader() {
   return (
-    <div className="space-y-2" aria-label="Budget KPIs">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {orderedKpis.map((kpi) => {
-          const isActive = kpi.key === activeKpi
-          const subtitle = kpi.delta ?? kpi.progress
-          const colors = KPI_STATUS_COLORS[kpi.status]
-
+    <section className="space-y-3" aria-label="Budget KPIs">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        {KPI_ITEMS.map((item) => {
+          const Icon = item.icon
           return (
             <button
-              key={kpi.key}
+              key={item.key}
               type="button"
-              className={cn(
-                'relative overflow-hidden rounded-xl border border-transparent bg-card p-4 text-left transition-all',
-                'hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                isActive && 'border-primary bg-primary/5'
-              )}
-              aria-pressed={isActive}
-              onClick={() => onFilterChange(kpi.key)}
+              className="rounded-xl border border-border/70 bg-card p-4 text-left shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              onClick={() => {}}
             >
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                    {kpi.icon ? (
-                      <span aria-hidden className={cn('text-lg', colors.text)}>
-                        {kpi.icon}
-                      </span>
-                    ) : (
-                      <span
-                        aria-hidden
-                        className={cn('flex h-2 w-2 rounded-full', colors.bg)}
-                      />
-                    )}
-                    <span>{kpi.label}</span>
-                  </div>
-
-                  <p className="text-2xl font-semibold">{kpi.value}</p>
-
-                  {subtitle ? (
-                    <span
-                      className={cn(
-                        'inline-flex items-center text-sm font-medium',
-                        colors.text
-                      )}
-                    >
-                      {subtitle}
-                    </span>
-                  ) : null}
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">{item.label}</p>
+                  <p className={`mt-2 text-3xl font-semibold tracking-tight ${item.valueTone ?? 'text-foreground'}`}>
+                    {item.value}
+                  </p>
                 </div>
-
-                {isActive ? (
-                  <span className="sr-only">Active</span>
-                ) : null}
+                <span className="rounded-lg bg-muted/80 p-2 text-muted-foreground">
+                  <Icon className="h-4 w-4" />
+                </span>
               </div>
             </button>
           )
         })}
       </div>
-
-      <div aria-live="polite" className="sr-only">
-        {announcement}
-      </div>
-    </div>
+    </section>
   )
 }
