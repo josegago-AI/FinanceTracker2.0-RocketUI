@@ -44,7 +44,12 @@ export default async function DashboardPage() {
 
   return (
    <main className="max-w-7xl mx-auto px-6 py-8">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      <header className="mb-8">
+        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          View your financial overview, recent transactions, and spending trends.
+        </p>
+      </header>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <FinancialSummaryCard title="Total Balance" amount={kpis.totalBalance} change={0} changeType="neutral" icon="Wallet" iconColor="bg-blue-500" />
         <FinancialSummaryCard title="Monthly Income" amount={kpis.monthlyIncome} change={0} changeType="neutral" icon="TrendingUp" iconColor="bg-green-500" />

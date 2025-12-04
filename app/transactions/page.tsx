@@ -66,6 +66,12 @@ if (!data) {
   // ✅ 5. Render Rocket-style view
   return (
     <main className="max-w-7xl mx-auto px-6 py-8">
+      <header className="mb-8">
+        <h1 className="text-2xl font-bold text-foreground">Transactions</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Track and manage all your financial transactions in one place.
+        </p>
+      </header>
       <TransactionView
         initialQuery={params}     // gives client UI the current filters/sort
         txs={data}                // main transaction list
